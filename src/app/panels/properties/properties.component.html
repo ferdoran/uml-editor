@@ -1,0 +1,58 @@
+
+
+<div id="properties-panel">
+  <h2 class="text-center">Properties</h2>
+<ng-container *ngIf="selectedElement && constr && constr.name === 'ClassShapeComponent'">
+  <div class="w-80 mx-auto input-group input-group-sm mb-1">
+    <input class="form-control rounded-0" type="text" [(ngModel)]="selectedElement['name']" name="class-name" />
+  </div>
+  <h3>Attributes</h3>
+  <ul>
+    <li *ngFor="let attr of selectedElement['attributes']; let i = index; trackBy:trackFunction">
+      <div class="input-group input-group-sm mb-1">
+        <input class="form-control rounded-0" [(ngModel)]="selectedElement['attributes'][i]" minlength="1" />
+        <div class="input-group-append">
+          <button class="btn btn-secondary rounded-0" ngbTooltip="Remove" (click)="removeAttribute(i)">
+            <i class="material-icons">delete</i>
+          </button>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="input-group input-group-sm mb-1">
+        <input class="form-control rounded-0 add-input" minlength="1" [(ngModel)]="newAttrValue" />
+        <div class="input-group-append">
+          <button class="btn btn-secondary rounded-0 add-element" ngbTooltip="Add Attribute" (click)="addAttribute()">
+            <i class="material-icons">add</i>
+          </button>
+        </div>
+      </div>
+    </li>
+  </ul>
+
+  <h3>Methods</h3>
+  <ul>
+    <li *ngFor="let meth of selectedElement['methods']; let i = index; trackBy:trackFunction">
+      <div class="input-group input-group-sm mb-1">
+        <input class="form-control rounded-0" [(ngModel)]="selectedElement['methods'][i]" minlength="1" />
+        <div class="input-group-append">
+          <button class="btn btn-secondary rounded-0" ngbTooltip="Remove" (click)="removeMethod(i)">
+            <i class="material-icons">delete</i>
+          </button>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="input-group input-group-sm mb-1">
+        <input class="form-control rounded-0" minlength="1" [(ngModel)]="newMethValue" />
+        <div class="input-group-append">
+          <button class="btn btn-secondary rounded-0" ngbTooltip="Add Method" (click)="addMethod()">
+            <i class="material-icons">add</i>
+          </button>
+        </div>
+      </div>
+    </li>
+  </ul>
+</ng-container>
+</div>
+

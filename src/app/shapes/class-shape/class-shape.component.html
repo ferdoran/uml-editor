@@ -1,0 +1,11 @@
+
+<svg:rect class="name-rect" x="0" y="0" [attr.width]="width" [attr.height]="nameRectHeight" style="fill: white; stroke: black; stroke-width: 1;" #nameRect></svg:rect>
+<svg:text font-family="Helvetica" [attr.width]="width" [attr.height]="height" font-size="10" [attr.x]="width/2" [attr.y]="nameRectHeight / 2" style="fill: black;" text-anchor="middle" #stereotypeText> {{ stereotype }}</svg:text>
+<svg:text font-family="Helvetica" [attr.width]="width" [attr.height]="height" font-size="10" [attr.x]="width/2" [attr.y]="nameRectHeight / 2 + 10" style="fill: black;" text-anchor="middle" #nameText> {{ name }} </svg:text>
+
+<svg:rect class="attr-rect" x="0" [attr.y]="nameRectHeight" [attr.width]="width" [attr.height]="attrRectHeight" style="fill: white; stroke: black; stroke-width: 1;" #attrRect></svg:rect>
+<svg:text font-family="Helvetica" [attr.width]="width" [attr.height]="height" font-size="10" [attr.x]="10" [attr.y]="nameRectHeight + (i+2) * fontSize" style="fill: black;" text-anchor="start" *ngFor="let attr of attributes; let i = index"> {{ attr }} </svg:text>
+<svg:rect class="methods-rect" x="0" [attr.y]="nameRectHeight + attrRectHeight" [attr.width]="width" [attr.height]="methRectHeight" style="fill: white; stroke: black; stroke-width: 1;" #methRect></svg:rect>
+<svg:text font-family="Helvetica" [attr.width]="width" [attr.height]="height" font-size="10" [attr.x]="10" [attr.y]="nameRectHeight + attrRectHeight + (i+2) * fontSize" style="fill: black;" text-anchor="start" *ngFor="let meth of methods; let i = index"> {{ meth }} </svg:text>
+
+
