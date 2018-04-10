@@ -1,7 +1,8 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ComponentFactoryResolver } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ComponentFactoryResolver, HostListener } from '@angular/core';
 import { ClassShapeComponent } from '../../shapes/class-shape/class-shape.component';
 import { ShapeWrapperComponent } from '../../shapes/shape-wrapper/shape-wrapper.component';
 import { ShapeHostDirective } from '../../directives/shape-host.directive';
+import { ShapeDropService } from '../../services/shape-drop.service';
 
 @Component({
   selector: 'app-editor',
@@ -15,29 +16,47 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
   elements = [];
 
-  constructor(private compFacRes: ComponentFactoryResolver) { }
+  constructor(private compFacRes: ComponentFactoryResolver, private shapeDropService: ShapeDropService, private elementRef: ElementRef) { }
 
   ngOnInit() {
     let cmpFac = this.compFacRes.resolveComponentFactory(ClassShapeComponent);
-    let viewConRef = this.shapeHost.viewContainerRef;
-    viewConRef.clear();
+    let classViewConRef = this.shapeHost.viewContainerRef;
+    // classViewConRef.clear();
 
-    let compRef = viewConRef.createComponent(cmpFac);
-    compRef.instance.name = "somePerson";
+    this.shapeDropService.droppedShape.subscribe(droppedData => {
+      let selfy = this;
+      if (droppedData.type === "class") {
+        var x = droppedData.x - this.elementRef.nativeElement.offsetLeft;
+        var y = droppedData.y - this.elementRef.nativeElement.offsetTop;
+        this.createClassShape({ x: x, y: y });
+      }
+      else if (droppedData.type === "interface") {
 
-    let compRef2 = viewConRef.createComponent(cmpFac);
-    compRef2.instance.name = "otherPerson";
-
-    this.elements.push(compRef.instance);
-    this.elements.push(compRef2.instance);
-    // this.elements.push(shape);
+      }
+    });
   }
 
   ngAfterViewInit() {
-    // this.panel.nativeElement.width = "100%";
-    // this.panel.nativeElement.height = "100%";
+  }
 
-    console.log(this.elements);
+
+  private createClassShape(position) {
+
+    let cmpFac = this.compFacRes.resolveComponentFactory(ClassShapeComponent);
+    let classViewConRef = this.shapeHost.viewContainerRef;
+
+    let compRef = classViewConRef.createComponent(cmpFac);
+    compRef.instance.name = "Class";
+    let x = position.x - (compRef.instance.width / 2);
+    x = x - x % 10;
+    let y = position.y - (compRef.instance.height / 2);
+    y = y - y % 10;
+    compRef.instance.x = x;
+    compRef.instance.y = y;
+    // compRef.instance.setX(position.x - position.x % 10);
+    // compRef.instance.setY(position.y - position.y % 10);
+
+    this.elements.push(compRef);
   }
 
 }

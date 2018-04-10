@@ -1,12 +1,13 @@
 
 
 <div id="properties-panel">
-  <h2 class="text-center">Properties</h2>
+  <!-- <h2 class="text-center">Properties</h2> -->
 <ng-container *ngIf="selectedElement && constr && constr.name === 'ClassShapeComponent'">
+  <h3 class="text-center">Name</h3>
   <div class="w-80 mx-auto input-group input-group-sm mb-1">
     <input class="form-control rounded-0" type="text" [(ngModel)]="selectedElement['name']" name="class-name" />
   </div>
-  <h3>Attributes</h3>
+  <h3 class="text-center">Attributes</h3>
   <ul>
     <li *ngFor="let attr of selectedElement['attributes']; let i = index; trackBy:trackFunction">
       <div class="input-group input-group-sm mb-1">
@@ -30,7 +31,7 @@
     </li>
   </ul>
 
-  <h3>Methods</h3>
+  <h3 class="text-center">Methods</h3>
   <ul>
     <li *ngFor="let meth of selectedElement['methods']; let i = index; trackBy:trackFunction">
       <div class="input-group input-group-sm mb-1">
@@ -44,9 +45,9 @@
     </li>
     <li>
       <div class="input-group input-group-sm mb-1">
-        <input class="form-control rounded-0" minlength="1" [(ngModel)]="newMethValue" />
+        <input class="form-control rounded-0 add-input" minlength="1" [(ngModel)]="newMethValue" />
         <div class="input-group-append">
-          <button class="btn btn-secondary rounded-0" ngbTooltip="Add Method" (click)="addMethod()">
+          <button class="btn btn-secondary rounded-0 add-element" ngbTooltip="Add Method" (click)="addMethod()">
             <i class="material-icons">add</i>
           </button>
         </div>

@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
@@ -26,16 +26,23 @@ export class AppComponent implements AfterViewInit {
 
   @ViewChild('panel') panel: ElementRef;
 
+  @HostListener('document:mousemove', ['$event']) mouseMove(e: MouseEvent) {
+    this.mousePos = {
+      x: e.offsetX,
+      y: e.offsetY
+    };
+  }
+
   ngAfterViewInit() {
 
-    const obs = Observable.fromEvent(document, "mousemove");
+    // const obs = Observable.fromEvent(document, "mousemove");
 
-    obs.subscribe((e: MouseEvent) => {
-      this.mousePos = {
-        x: e.offsetX,
-        y: e.offsetY
-      };
-    });
+    // obs.subscribe((e: MouseEvent) => {
+    //   this.mousePos = {
+    //     x: e.offsetX,
+    //     y: e.offsetY
+    //   };
+    // });
 
     // const down = Observable.fromEvent(this.panel.nativeElement, 'mousedown')
     // .filter((e: MouseEvent) => !((e.which && e.which == 3) || (e.button && e.button == 2)))

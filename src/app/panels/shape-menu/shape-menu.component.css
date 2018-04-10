@@ -1,0 +1,23 @@
+.shape-row {
+    margin-top: 1rem;
+}
+
+.shape-row-shape {
+    fill: white;
+    stroke: black;
+    stroke-width: 1;
+    cursor: pointer;
+}
+
+.shape-row-text {
+    margin: 10 auto;
+    display: block;
+    text-anchor: center;
+    user-select: none;
+}
+
+#drag-layer-wrapper {
+    position: absolute;
+    z-index: 10000;
+    opacity: 0.5;
+}

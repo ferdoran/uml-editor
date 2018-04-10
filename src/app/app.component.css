@@ -16,15 +16,17 @@ app-toolbar {
     width: 100%;
     height: 15%;
     background: lightgray;
+    z-index: 0;
 }
 
 app-shape-menu {
     top: 15%;
     left: 0;
-    width: 15%;
+    width: 20%;
     height: 85%;
     position: fixed;
     background-color: #f0f0f0;
+    z-index: 0;
 }
 
 app-properties {
@@ -35,14 +37,16 @@ app-properties {
     position: fixed;
     background-color: #f0f0f0;
     overflow-y: scroll;
+    z-index: 0;
 }
 
 app-editor {
     top: 15%;
-    left: 15%;
+    left: 20%;
     right: 15%;
     height: 85%;
     width: 70%;
     position: fixed;
     background-color: #fafafa;
+    z-index: 0;
 }

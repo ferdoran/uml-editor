@@ -24,13 +24,13 @@ export class ShapeWrapperComponent {
 
   public width: number;
   public height: number;
-  public x: number;
-  public y: number;
+  public x?: number = 0;
+  public y?: number = 0;
   protected isMouseDown: boolean = false;
   protected isDragging: boolean = false;
   public isSelected: boolean = false;
   protected gridSize: number = 10;
-  private readonly DRAG_TIMEOUT: number = 150;
+  private readonly DRAG_TIMEOUT: number = 50;
   private dragTimer: NodeJS.Timer;
   public id: string;
 

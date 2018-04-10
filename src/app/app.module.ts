@@ -12,6 +12,8 @@ import { ShapeWrapperComponent } from './shapes/shape-wrapper/shape-wrapper.comp
 import { ClassShapeComponent } from './shapes/class-shape/class-shape.component';
 import { ShapeHostDirective } from './directives/shape-host.directive';
 import { ShapeSelectorService } from './services/shape-selector.service';
+import { ShapeStencilComponent } from './shapes/shape-stencil/shape-stencil.component';
+import { ShapeDropService } from './services/shape-drop.service';
 
 
 @NgModule({
@@ -23,7 +25,8 @@ import { ShapeSelectorService } from './services/shape-selector.service';
     EditorComponent,
     ShapeWrapperComponent,
     ClassShapeComponent,
-    ShapeHostDirective
+    ShapeHostDirective,
+    ShapeStencilComponent
   ],
   imports: [
     BrowserModule,
@@ -33,7 +36,7 @@ import { ShapeSelectorService } from './services/shape-selector.service';
   entryComponents: [
     ClassShapeComponent
   ],
-  providers: [ShapeSelectorService],
+  providers: [ShapeSelectorService, ShapeDropService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
