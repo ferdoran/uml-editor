@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ComponentFactoryResolver, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ComponentFactoryResolver, HostListener, Renderer2 } from '@angular/core';
 import { ClassShapeComponent } from '../../shapes/class-shape/class-shape.component';
 import { ShapeWrapperComponent } from '../../shapes/shape-wrapper/shape-wrapper.component';
 import { ShapeHostDirective } from '../../directives/shape-host.directive';
@@ -16,11 +16,13 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
   elements = [];
 
-  constructor(private compFacRes: ComponentFactoryResolver, private shapeDropService: ShapeDropService, private elementRef: ElementRef) { }
+  constructor(private compFacRes: ComponentFactoryResolver, private shapeDropService: ShapeDropService, private elementRef: ElementRef, private _renderer: Renderer2) { }
 
   ngOnInit() {
     let cmpFac = this.compFacRes.resolveComponentFactory(ClassShapeComponent);
     let classViewConRef = this.shapeHost.viewContainerRef;
+
+
     // classViewConRef.clear();
 
     this.shapeDropService.droppedShape.subscribe(droppedData => {
@@ -37,6 +39,16 @@ export class EditorComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    let compStyle = window.getComputedStyle(this.panel.nativeElement)
+    let w = +compStyle.width.replace("px", "");
+    let h = +compStyle.height.replace("px", "");
+
+
+    w = w - w % 10;
+    h = h - h % 10;
+    console.log("[%s, %s]", w, h);
+    this._renderer.setStyle(this.panel.nativeElement, "width", w);
+    this._renderer.setStyle(this.panel.nativeElement, "height", h);
   }
 
 
