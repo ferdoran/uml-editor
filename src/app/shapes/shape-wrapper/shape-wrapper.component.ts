@@ -68,6 +68,7 @@ export class ShapeWrapperComponent {
   }
 
   @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
+    event.preventDefault();
     if(!this.isSelected) {
       this.isSelected = true;
       this.shapeSelectorService.selectElement.next(this.id)
@@ -75,11 +76,13 @@ export class ShapeWrapperComponent {
     }
     this.isMouseDown = true;
     console.log("Mouse has been downed on me!", this.isSelected);
-    this.dragTimer = setTimeout(() => {
-      if (this.isMouseDown) {
-        this.isDragging = true;
-      }
-    }, this.DRAG_TIMEOUT);
+    if(this.isMouseDown)
+      this.isDragging = true;
+    // this.dragTimer = setTimeout(() => {
+    //   if (this.isMouseDown) {
+    //     this.isDragging = true;
+    //   }
+    // }, this.DRAG_TIMEOUT);
   }
 
   @HostListener('document:mouseup', ['$event']) onMouseUp(event: MouseEvent) {
