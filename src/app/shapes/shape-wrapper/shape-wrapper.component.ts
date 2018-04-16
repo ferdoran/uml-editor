@@ -1,17 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, Renderer2, HostListener } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/observable/combineLatest';
-import 'rxjs/add/operator/take';
-import 'rxjs/add/operator/skipUntil';
-import 'rxjs/add/operator/startWith';
+// import { Subscription } from 'rxjs/Subscription';
+// import { Observable } from 'rxjs/Observable';
 import { ShapeSelectorService } from '../../services/shape-selector.service';
-import {v4 as uuid} from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { DomUtils } from '../../utils/DomUtils';
 
 @Component({
@@ -33,8 +24,13 @@ export class ShapeWrapperComponent {
   private readonly DRAG_TIMEOUT: number = 50;
   private dragTimer: NodeJS.Timer;
   public id: string;
+  protected resizeShape: ElementRef;
+  protected isResizing: boolean = false;
+  protected resizeDirection: string = "";
+  protected movementX: number = 0;
+  protected movementY: number = 0;
 
-  constructor(protected elementRef: ElementRef, protected renderer: Renderer2, protected shapeSelectorService: ShapeSelectorService) {
+  constructor(protected elementRef: ElementRef, protected renderer: Renderer2, protected shapeSelectorService: ShapeSelectorService, ) {
     this.id = uuid();
     renderer.setAttribute(this.elementRef.nativeElement, "id", this.id);
     shapeSelectorService.registerShape(this);
@@ -60,9 +56,6 @@ export class ShapeWrapperComponent {
         this.shapeSelectorService.deselectElement.next(this.id);
         this.unhighlight();
       }
-      // else if() {
-
-      // }
 
     }
   }
@@ -76,7 +69,7 @@ export class ShapeWrapperComponent {
     }
     this.isMouseDown = true;
     console.log("Mouse has been downed on me!", this.isSelected);
-    if(this.isMouseDown)
+    if(this.isMouseDown && !this.isResizing)
       this.isDragging = true;
     // this.dragTimer = setTimeout(() => {
     //   if (this.isMouseDown) {
@@ -89,11 +82,13 @@ export class ShapeWrapperComponent {
     // event.preventDefault();
     this.isMouseDown = false;
     this.isDragging = false;
+    this.isResizing = false;
+    this.resizeDirection = "";
     clearTimeout(this.dragTimer);
     console.log("Mouse has been released");
   }
 
-  @HostListener('mousemove', ['$event']) onMouseMove(event: MouseEvent) {
+  @HostListener('document:mousemove', ['$event']) onMouseMove(event: MouseEvent) {
     // event.preventDefault();
     if(this.isMouseDown && this.isDragging) {
       let x = event.offsetX - (this.width / 2);
@@ -105,6 +100,63 @@ export class ShapeWrapperComponent {
       this.renderer.setAttribute(this.elementRef.nativeElement, "x", x.toString());
       this.renderer.setAttribute(this.elementRef.nativeElement, "y", y.toString());
     }
+    else if(this.isResizing) {
+      switch(this.resizeDirection) {
+        case "nw":
+          this.resizeWidth(true, event);
+          this.resizeHeight(true, event);
+          break;
+        case "n":
+          this.resizeHeight(true, event);
+          break;
+        case "ne":
+          this.resizeWidth(false, event);
+          this.resizeHeight(true, event);
+          break;
+        case "w":
+          this.resizeWidth(true, event);
+          break;
+        case "e":
+          this.resizeWidth(false, event);
+          break;
+        case "sw":
+          this.resizeWidth(true, event);
+          this.resizeHeight(false, event);
+          break;
+        case "s":
+          this.resizeHeight(false, event);
+          break;
+        case "se":
+          this.resizeWidth(false, event);
+          this.resizeHeight(false, event);
+      }
+    }
+  }
+
+  protected updateViewBox() {
+    this.renderer.setAttribute(this.elementRef.nativeElement, "viewBox", "-5 -5 " + (this.width + 10) + " " + (this.height + 10));
+  }
+
+  public setX(x: number) {
+    this.x = x;
+    this.renderer.setAttribute(this.elementRef.nativeElement, "x", this.x.toString());
+  }
+
+  public setY(y: number) {
+    this.y = y;
+    this.renderer.setAttribute(this.elementRef.nativeElement, "y", this.y.toString());
+  }
+
+  public setHeight(h: number) {
+    this.height = h;
+    this.renderer.setAttribute(this.elementRef.nativeElement, "height", this.height.toString());
+    this.updateViewBox();
+  }
+
+  public setWidth(w: number) {
+    this.width = w;
+    this.renderer.setAttribute(this.elementRef.nativeElement, "width", this.width.toString());
+    this.updateViewBox();
   }
 
   @HostListener('mouseenter') highlight() {
@@ -116,11 +168,60 @@ export class ShapeWrapperComponent {
 
   select() {
     this.renderer.setStyle(this.elementRef.nativeElement, "outline", "3px solid lightblue");
+    // draw resizable rect
+    this.renderer.removeClass(this.resizeShape.nativeElement, "d-none");
+
+
   }
 
   @HostListener('mouseleave') unhighlight() {
     if(!this.isSelected) {
       this.renderer.setStyle(this.elementRef.nativeElement, "outline", "none");
+      this.renderer.addClass(this.resizeShape.nativeElement, "d-none");
+    }
+  }
+
+  resizeWidth(isNegative: boolean, event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (this.isResizing) {
+      let w: number = 0;
+      let x: number = this.x;
+      this.movementX += event.movementX;
+      if(this.movementX >= 10 || this.movementX <= -10) {
+        if (isNegative) {
+          w = this.width - this.movementX;
+          x = x + this.movementX;
+        }
+        else {
+          w = this.width + this.movementX;
+        }
+        this.setWidth(w);
+        this.setX(x);
+        this.movementX = 0;
+      }
+    }
+  }
+
+  resizeHeight(isNegative: boolean, event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (this.isResizing) {
+      let h: number = 0;
+      let y: number = this.y;
+      this.movementY += event.movementY;
+      if(this.movementY >= 10 || this.movementY <= -10) {
+        if (isNegative) {
+          h = this.height - this.movementY;
+          y = y + this.movementY;
+        }
+        else {
+          h = this.height + this.movementY;
+        }
+        this.setHeight(h);
+        this.setY(y);
+        this.movementY = 0;
+      }
     }
   }
 

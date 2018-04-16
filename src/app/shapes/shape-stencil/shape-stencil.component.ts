@@ -23,7 +23,6 @@ export class ShapeStencilComponent implements OnInit, AfterViewInit {
   ngOnInit() {}
 
   ngAfterViewInit() {
-    console.log(this.dragLayer.parentNode);
   }
 
   @HostListener('mousedown', ['$event']) onDragStart(event: MouseEvent) {

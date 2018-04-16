@@ -26,6 +26,8 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
   @ViewChild('nameText') nameText: ElementRef;
   @ViewChild('attrRect') attrRect: ElementRef;
   @ViewChild('methRect') methRect: ElementRef;
+  @ViewChild('resizeRect') resizeGroup: ElementRef;
+  @ViewChild('displayGroup') displayGroup: ElementRef;
 
   constructor(protected elementRef: ElementRef, protected renderer: Renderer2, protected shapeSelectorService: ShapeSelectorService) {
     super(elementRef, renderer, shapeSelectorService);
@@ -34,23 +36,18 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
   }
 
   ngOnInit() {
-    // this.attributes.push("test");
-    // this.attributes.push("test2");
-    // this.attributes.push("test3");
-    // this.attributes.push("test3");
-
-    // this.methods.push("meth1()");
-    // this.methods.push("meth2()");
-    // this.methods.push("meth3()");
-    // this.methods.push("meth4()");
     this.updateHeights();
-
   }
 
   ngAfterViewInit() {
     this.setX(this.x);
     this.setY(this.y);
     this.renderer.setStyle(this.elementRef.nativeElement, "cursor", "move");
+    this.renderer.setAttribute(this.elementRef.nativeElement, "width", this.width.toString());
+    this.renderer.setAttribute(this.elementRef.nativeElement, "height", this.height.toString());
+
+    this.resizeShape = this.resizeGroup;
+    this.updateViewBox();
   }
 
   updateHeights() {
@@ -58,21 +55,28 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
     if(this.attributes.length === 0 && this.methods.length === 0) {
       nameRectHeight *= 2;
     }
-    this.nameRectHeight = nameRectHeight;
+    // this.nameRectHeight = nameRectHeight;
 
     let attrRectHeight = 0;
     if(this.attributes.length > 0) {
       attrRectHeight = this.fontSize * (this.attributes.length + 2);
     }
-    this.attrRectHeight = attrRectHeight;
+    // this.attrRectHeight = attrRectHeight;
 
     let methRectHeight = 0;
     if(this.methods.length > 0) {
       methRectHeight = this.fontSize * (this.methods.length + 2);
     }
-    this.methRectHeight = methRectHeight;
+    // this.methRectHeight = methRectHeight;
 
-    this.height = nameRectHeight + attrRectHeight + methRectHeight;
+    let innerHeight = nameRectHeight + attrRectHeight + methRectHeight;
+    let heightRatio = this.height / innerHeight;
+
+    this.nameRectHeight = nameRectHeight * heightRatio;
+    this.attrRectHeight = attrRectHeight * heightRatio;
+    this.methRectHeight = methRectHeight * heightRatio;
+
+    // this.setHeight(nameRectHeight + attrRectHeight + methRectHeight);
   }
 
   public setX(x: number) {
@@ -83,12 +87,47 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
     this.renderer.setAttribute(this.nameText.nativeElement, "x", (this.width / 2).toString());
   }
 
+  public setHeight(h: number) {
+    if(h > 0) {
+      this.height = h;
+      this.renderer.setAttribute(this.elementRef.nativeElement, "height", this.height.toString());
+      this.updateViewBox();
+      this.updateHeights();
+
+    }
+  }
+
+  public setWidth(w: number) {
+    if(w > 0) {
+      this.width = w;
+      this.renderer.setAttribute(this.elementRef.nativeElement, "width", this.width.toString());
+      super.updateViewBox();
+    }
+  }
+
   public setY(y: number) {
     // console.log("changed y[%s] to [%s]", this.y, y);
     this.y = y;
     this.renderer.setAttribute(this.elementRef.nativeElement, "y", this.y.toString());
     this.renderer.setAttribute(this.stereotypeText.nativeElement, "y", (this.nameRectHeight / 2).toString());
     this.renderer.setAttribute(this.nameText.nativeElement, "y", (this.nameRectHeight / 2 + 10).toString());
+  }
+
+  startResize(event: MouseEvent, direction: string) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isResizing = true;
+    this.resizeDirection = direction;
+  }
+
+
+  stopResize(event: MouseEvent) {
+    event.preventDefault();
+    if(this.isResizing) {
+      event.preventDefault();
+      this.isResizing = false;
+      this.resizeDirection = "";
+    }
   }
 
 }

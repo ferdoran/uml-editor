@@ -21,8 +21,6 @@ export class EditorComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     let cmpFac = this.compFacRes.resolveComponentFactory(ClassShapeComponent);
     let classViewConRef = this.shapeHost.viewContainerRef;
-
-
     // classViewConRef.clear();
 
     this.shapeDropService.droppedShape.subscribe(droppedData => {
@@ -46,7 +44,6 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
     w = w - w % 10;
     h = h - h % 10;
-    console.log("[%s, %s]", w, h);
     this._renderer.setStyle(this.panel.nativeElement, "width", w);
     this._renderer.setStyle(this.panel.nativeElement, "height", h);
   }
@@ -72,4 +69,20 @@ export class EditorComponent implements OnInit, AfterViewInit {
     this.elements.push(compRef);
   }
 
+  @HostListener('document:keydown', ['$event']) deleteElement(event: KeyboardEvent) {
+    switch(event.keyCode) {
+      case 46: // Delete Key
+        this.deleteSelectedElements();
+        break;
+    }
+  }
+
+  private deleteSelectedElements() {
+    let selectedElements = this.elements.filter(elem => elem.instance.isSelected);
+    selectedElements.forEach(element => {
+      let idx = this.elements.indexOf(element);
+      this.elements.splice(idx, 1);
+      element.destroy();
+    });
+  }
 }
