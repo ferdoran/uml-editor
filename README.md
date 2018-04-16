@@ -6,6 +6,14 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 For a live demo please navigate [here](http://185.243.8.129/uml-editor/).
 
+## Current Features
+
+* Drag and Drop of Class Shapes from Shape-Menu to editor panel
+* Dragging of elements inside the editor panel
+* Resizing of elements inside the editor panel
+* Display of element's properties
+* Manipluation of element's properties
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
