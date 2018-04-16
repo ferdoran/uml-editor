@@ -4,7 +4,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Live Demo
 
-For a live demo please navigate to `http://185.243.8.129/uml-editor/`.
+For a live demo please navigate [here](http://185.243.8.129/uml-editor/).
 
 ## Development server
 
