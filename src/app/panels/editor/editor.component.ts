@@ -3,6 +3,9 @@ import { ClassShapeComponent } from '../../shapes/class-shape/class-shape.compon
 import { ShapeWrapperComponent } from '../../shapes/shape-wrapper/shape-wrapper.component';
 import { ShapeHostDirective } from '../../directives/shape-host.directive';
 import { ShapeDropService } from '../../services/shape-drop.service';
+import { DrawConnectionService } from '../../services/draw-connection.service';
+import { ShapeConnectionComponent } from '../../shapes/shape-connection/shape-connection.component';
+import { DomUtils } from '../../utils/DomUtils';
 
 @Component({
   selector: 'app-editor',
@@ -16,12 +19,15 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
   elements = [];
 
-  constructor(private compFacRes: ComponentFactoryResolver, private shapeDropService: ShapeDropService, private elementRef: ElementRef, private _renderer: Renderer2) { }
+  constructor(private compFacRes: ComponentFactoryResolver, private shapeDropService: ShapeDropService, private elementRef: ElementRef, private _renderer: Renderer2, private _drawConnectionService: DrawConnectionService) { }
 
   ngOnInit() {
-    let cmpFac = this.compFacRes.resolveComponentFactory(ClassShapeComponent);
+    let classFac = this.compFacRes.resolveComponentFactory(ClassShapeComponent);
     let classViewConRef = this.shapeHost.viewContainerRef;
     // classViewConRef.clear();
+
+    let connFac = this.compFacRes.resolveComponentFactory(ShapeConnectionComponent);
+
 
     this.shapeDropService.droppedShape.subscribe(droppedData => {
       let selfy = this;
@@ -34,6 +40,16 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
       }
     });
+
+    this._drawConnectionService.drawConnection.subscribe(drawData => {
+      // if(drawData.messageType === "started") {
+
+      // }
+      // else if(drawData.messageType === "finished") {
+
+      // }
+      this.drawPath(drawData.startPosition, drawData.endPosition);
+    })
   }
 
   ngAfterViewInit() {
@@ -46,6 +62,18 @@ export class EditorComponent implements OnInit, AfterViewInit {
     h = h - h % 10;
     this._renderer.setStyle(this.panel.nativeElement, "width", w);
     this._renderer.setStyle(this.panel.nativeElement, "height", h);
+  }
+
+  private drawPath(from, to) {
+    let cmpFac = this.compFacRes.resolveComponentFactory(ShapeConnectionComponent);
+    let cmpViewConRef = this.shapeHost.viewContainerRef;
+
+    let compRef = cmpViewConRef.createComponent(cmpFac, 0);
+    let pathDesc = DomUtils.drawPath(from, to, true);
+    compRef.instance.setPathDescription(pathDesc);
+    compRef.instance.setStartPosition(from);
+    compRef.instance.setEndPosition(to);
+    this.elements.push(compRef);
   }
 
 

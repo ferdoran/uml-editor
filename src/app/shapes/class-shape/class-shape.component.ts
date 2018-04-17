@@ -3,6 +3,7 @@ import { ShapeWrapperComponent } from '../shape-wrapper/shape-wrapper.component'
 import { Subscription } from 'rxjs/Subscription';
 import { element } from 'protractor';
 import { ShapeSelectorService } from '../../services/shape-selector.service';
+import { DrawConnectionService } from '../../services/draw-connection.service';
 
 @Component({
   selector: 'svg.class-shape ',
@@ -28,9 +29,10 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
   @ViewChild('methRect') methRect: ElementRef;
   @ViewChild('resizeRect') resizeGroup: ElementRef;
   @ViewChild('displayGroup') displayGroup: ElementRef;
+  @ViewChild('anchorPoints') protected anchorPoints: ElementRef;
 
-  constructor(protected elementRef: ElementRef, protected renderer: Renderer2, protected shapeSelectorService: ShapeSelectorService) {
-    super(elementRef, renderer, shapeSelectorService);
+  constructor(protected elementRef: ElementRef, protected renderer: Renderer2, protected shapeSelectorService: ShapeSelectorService, protected drawConnectionService: DrawConnectionService) {
+    super(elementRef, renderer, shapeSelectorService, drawConnectionService);
     this.width = 200;
     this.height = 100;
   }
@@ -124,10 +126,28 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
   stopResize(event: MouseEvent) {
     event.preventDefault();
     if(this.isResizing) {
-      event.preventDefault();
       this.isResizing = false;
       this.resizeDirection = "";
     }
   }
 
+  startDrawingConnection(event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    if(!this.isDrawingConnection) {
+      this.isDrawingConnection = true;
+      this.drawConnectionService.startDrawing({x: event.offsetX, y: event.offsetY}, event.target);
+
+    }
+
+    console.log("started drawing");
+  }
+
+  finishDrawingConnection(event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDrawingConnection = false;
+    this.drawConnectionService.finishDrawing({ x: event.offsetX, y: event.offsetY }, event.target);
+    console.log("finished drawing");
+  }
 }

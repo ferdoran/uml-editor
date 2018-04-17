@@ -14,6 +14,8 @@ import { ShapeHostDirective } from './directives/shape-host.directive';
 import { ShapeSelectorService } from './services/shape-selector.service';
 import { ShapeStencilComponent } from './shapes/shape-stencil/shape-stencil.component';
 import { ShapeDropService } from './services/shape-drop.service';
+import { ShapeConnectionComponent } from './shapes/shape-connection/shape-connection.component';
+import { DrawConnectionService } from './services/draw-connection.service';
 
 
 @NgModule({
@@ -26,7 +28,8 @@ import { ShapeDropService } from './services/shape-drop.service';
     ShapeWrapperComponent,
     ClassShapeComponent,
     ShapeHostDirective,
-    ShapeStencilComponent
+    ShapeStencilComponent,
+    ShapeConnectionComponent
   ],
   imports: [
     BrowserModule,
@@ -34,9 +37,10 @@ import { ShapeDropService } from './services/shape-drop.service';
     NgbModule.forRoot()
   ],
   entryComponents: [
-    ClassShapeComponent
+    ClassShapeComponent,
+    ShapeConnectionComponent
   ],
-  providers: [ShapeSelectorService, ShapeDropService],
+  providers: [ShapeSelectorService, ShapeDropService, DrawConnectionService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

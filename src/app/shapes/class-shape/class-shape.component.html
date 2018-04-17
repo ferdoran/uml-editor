@@ -1,4 +1,4 @@
-<svg:g #displayGroup>
+<svg:g class="display-group" #displayGroup>
 <svg:rect class="name-rect" x="0" y="0" [attr.width]="width" [attr.height]="nameRectHeight" style="fill: white; stroke: black; stroke-width: 2;" #nameRect></svg:rect>
 <svg:text font-family="Helvetica" [attr.width]="width" [attr.height]="height" font-size="10" [attr.x]="width/2" [attr.y]="nameRectHeight / 2" style="fill: black;" text-anchor="middle" #stereotypeText> {{ stereotype }}</svg:text>
 <svg:text font-family="Helvetica" [attr.width]="width" [attr.height]="height" font-size="10" [attr.x]="width/2" [attr.y]="nameRectHeight / 2 + 10" style="fill: black;" text-anchor="middle" #nameText> {{ name }} </svg:text>
@@ -8,6 +8,7 @@
 <svg:rect class="methods-rect" x="0" [attr.y]="nameRectHeight + attrRectHeight" [attr.width]="width" [attr.height]="methRectHeight" style="fill: white; stroke: black; stroke-width: 2;" #methRect></svg:rect>
 <svg:text font-family="Helvetica" [attr.width]="width" [attr.height]="height" font-size="10" [attr.x]="10" [attr.y]="nameRectHeight + attrRectHeight + (i+2) * fontSize" style="fill: black;" text-anchor="start" *ngFor="let meth of methods; let i = index"> {{ meth }} </svg:text>
 </svg:g>
+
 <svg:g class="d-none" #resizeRect>
     <svg:rect class="resize-rect" x="0" y="0" [attr.height]="nameRectHeight + attrRectHeight + methRectHeight" [attr.width]="width"></svg:rect>
     <svg:circle cx="0" cy="0" r="5" class="resize-point" style="cursor: nw-resize" (mousedown)="startResize($event, 'nw')"></svg:circle>
@@ -18,4 +19,59 @@
     <svg:circle cx="0" [attr.cy]="height" r="5" class="resize-point" style="cursor: sw-resize" (mousedown)="startResize($event, 'sw')"></svg:circle>
     <svg:circle [attr.cx]="width / 2" [attr.cy]="height" r="5" class="resize-point" style="cursor: s-resize" (mousedown)="startResize($event, 's')"></svg:circle>
     <svg:circle [attr.cx]="width" [attr.cy]="height" r="5" class="resize-point" style="cursor: se-resize" (mousedown)="startResize($event, 'se')"></svg:circle>
+</svg:g>
+
+<svg:g class="d-none" #anchorPoints>
+    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
+        <svg:circle class="anchor-point-bg" [attr.cx]="width / 4" cy="0" r="10"></svg:circle>
+        <svg:circle class="anchor-point" [attr.cx]="width / 4" cy="0" r="3"></svg:circle>
+    </svg:g>
+    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
+        <svg:circle class="anchor-point-bg" [attr.cx]="width / 2" cy="0" r="10"></svg:circle>
+        <svg:circle class="anchor-point" [attr.cx]="width / 2" cy="0" r="3"></svg:circle>
+    </svg:g>
+    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
+        <svg:circle class="anchor-point-bg" [attr.cx]="width * 0.75" cy="0" r="10"></svg:circle>
+        <svg:circle class="anchor-point" [attr.cx]="width * 0.75" cy="0" r="3"></svg:circle>
+    </svg:g>
+
+    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
+        <svg:circle class="anchor-point-bg" cx="0" [attr.cy]="height / 4" r="10"></svg:circle>
+        <svg:circle class="anchor-point" cx="0" [attr.cy]="height / 4" r="3"></svg:circle>
+    </svg:g>
+    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
+        <svg:circle class="anchor-point-bg" [attr.cx]="width" [attr.cy]="height / 4" r="10"></svg:circle>
+        <svg:circle class="anchor-point" [attr.cx]="width" [attr.cy]="height / 4" r="3"></svg:circle>
+    </svg:g>
+
+    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
+        <svg:circle class="anchor-point-bg" cx="0" [attr.cy]="height / 2" r="10"></svg:circle>
+        <svg:circle class="anchor-point" cx="0" [attr.cy]="height / 2" r="3"></svg:circle>
+    </svg:g>
+    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
+        <svg:circle class="anchor-point-bg" [attr.cx]="width" [attr.cy]="height / 2" r="10"></svg:circle>
+        <svg:circle class="anchor-point" [attr.cx]="width" [attr.cy]="height / 2" r="3"></svg:circle>
+    </svg:g>
+
+    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
+        <svg:circle class="anchor-point-bg" cx="0" [attr.cy]="height * 0.75" r="10"></svg:circle>
+        <svg:circle class="anchor-point" cx="0" [attr.cy]="height * 0.75" r="3"></svg:circle>
+    </svg:g>
+    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
+        <svg:circle class="anchor-point-bg" [attr.cx]="width" [attr.cy]="height * 0.75" r="10"></svg:circle>
+        <svg:circle class="anchor-point" [attr.cx]="width" [attr.cy]="height * 0.75" r="3"></svg:circle>
+    </svg:g>
+
+    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
+        <svg:circle class="anchor-point-bg" [attr.cx]="width / 4" [attr.cy]="height" r="10"></svg:circle>
+        <svg:circle class="anchor-point" [attr.cx]="width / 4" [attr.cy]="height" r="3"></svg:circle>
+    </svg:g>
+    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
+        <svg:circle class="anchor-point-bg" [attr.cx]="width / 2" [attr.cy]="height" r="10"></svg:circle>
+        <svg:circle class="anchor-point" [attr.cx]="width / 2" [attr.cy]="height" r="3"></svg:circle>
+    </svg:g>
+    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
+        <svg:circle class="anchor-point-bg" [attr.cx]="width * 0.75" [attr.cy]="height" r="10"></svg:circle>
+        <svg:circle class="anchor-point" [attr.cx]="width * 0.75" [attr.cy]="height" r="3"></svg:circle>
+    </svg:g>
 </svg:g>

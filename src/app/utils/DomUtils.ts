@@ -17,4 +17,17 @@ export class DomUtils {
 
         return false;
     }
+
+    public static drawPath(startPoint: { x: number, y: number }, endPoint: { x: number, y: number }, drawStraight: boolean = true): string {
+
+        let d = "M"; // Move to position first
+        if(drawStraight) {
+            d += startPoint.x + " " + startPoint.y + " ";
+            d += "L" + startPoint.x + " " + startPoint.y + " ";
+            d += "L" + endPoint.x + " " + endPoint.y + " ";
+        }
+        d += "Z"; // Close path
+
+        return d;
+    }
 }

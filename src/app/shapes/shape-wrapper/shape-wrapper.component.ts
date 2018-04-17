@@ -4,6 +4,7 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, Renderer2, Hos
 import { ShapeSelectorService } from '../../services/shape-selector.service';
 import { v4 as uuid } from 'uuid';
 import { DomUtils } from '../../utils/DomUtils';
+import { DrawConnectionService } from '../../services/draw-connection.service';
 
 @Component({
   selector: '[shape-wrapper]',
@@ -12,7 +13,6 @@ import { DomUtils } from '../../utils/DomUtils';
   styleUrls: ['./shape-wrapper.component.css']
 })
 export class ShapeWrapperComponent {
-
   public width: number;
   public height: number;
   public x?: number = 0;
@@ -29,19 +29,14 @@ export class ShapeWrapperComponent {
   protected resizeDirection: string = "";
   protected movementX: number = 0;
   protected movementY: number = 0;
+  protected anchorPoints: ElementRef;
+  protected isDrawingConnection: boolean = false;
 
-  constructor(protected elementRef: ElementRef, protected renderer: Renderer2, protected shapeSelectorService: ShapeSelectorService, ) {
+  constructor(protected elementRef: ElementRef, protected renderer: Renderer2, protected shapeSelectorService: ShapeSelectorService, protected drawConnectionService: DrawConnectionService) {
     this.id = uuid();
     renderer.setAttribute(this.elementRef.nativeElement, "id", this.id);
     shapeSelectorService.registerShape(this);
   }
-
-  // @HostListener('click', ['$event']) onClick(event: MouseEvent) {
-  //   // event.preventDefault();
-
-  //   console.log("I have been clicked!", event);
-
-  // }
 
   @HostListener('document:mousedown', ['$event', '$event.target']) deselect(event: MouseEvent, target: any) {
     if(this.isSelected) {
@@ -56,7 +51,6 @@ export class ShapeWrapperComponent {
         this.shapeSelectorService.deselectElement.next(this.id);
         this.unhighlight();
       }
-
     }
   }
 
@@ -84,6 +78,7 @@ export class ShapeWrapperComponent {
     this.isDragging = false;
     this.isResizing = false;
     this.resizeDirection = "";
+    this.isDrawingConnection = false;
     clearTimeout(this.dragTimer);
     console.log("Mouse has been released");
   }
@@ -91,8 +86,8 @@ export class ShapeWrapperComponent {
   @HostListener('document:mousemove', ['$event']) onMouseMove(event: MouseEvent) {
     // event.preventDefault();
     if(this.isMouseDown && this.isDragging) {
-      let x = event.offsetX - (this.width / 2);
-      let y = event.offsetY - (this.height / 2);
+      let x = event.offsetX - (this.width / 2);   // FIXME: different behaviour for ShapeConnectionComponent required because width and height are different
+      let y = event.offsetY - (this.height / 2);  // FIXME: different behaviour for ShapeConnectionComponent required because width and height are different
       x = x + this.gridSize - x % this.gridSize;
       y = y + this.gridSize - y % this.gridSize;
       this.x = x;
@@ -159,25 +154,31 @@ export class ShapeWrapperComponent {
     this.updateViewBox();
   }
 
-  @HostListener('mouseenter') highlight() {
+  @HostListener('mouseenter') protected highlight() {
     if(!this.isSelected) {
       this.renderer.setStyle(this.elementRef.nativeElement, "outline", "1px dashed green");
+      if(this.anchorPoints)
+        this.renderer.removeClass(this.anchorPoints.nativeElement, "d-none");
     }
-
   }
 
   select() {
     this.renderer.setStyle(this.elementRef.nativeElement, "outline", "3px solid lightblue");
     // draw resizable rect
-    this.renderer.removeClass(this.resizeShape.nativeElement, "d-none");
-
+    if(this.resizeShape)
+      this.renderer.removeClass(this.resizeShape.nativeElement, "d-none");
+    if(this.anchorPoints)
+      this.renderer.addClass(this.anchorPoints.nativeElement, "d-none");
 
   }
 
-  @HostListener('mouseleave') unhighlight() {
+   @HostListener('mouseleave') protected unhighlight() {
     if(!this.isSelected) {
       this.renderer.setStyle(this.elementRef.nativeElement, "outline", "none");
-      this.renderer.addClass(this.resizeShape.nativeElement, "d-none");
+      if (this.resizeShape)
+        this.renderer.addClass(this.resizeShape.nativeElement, "d-none");
+      if (this.anchorPoints)
+        this.renderer.addClass(this.anchorPoints.nativeElement, "d-none");
     }
   }
 
