@@ -58,7 +58,6 @@ export class AnchorPointComponent implements OnInit {
     event.stopPropagation();
     AnchorPointComponent.isDrawing = true;
     this.drawConnectionService.startDrawing(this);
-    console.log("started drawing");
   }
 
   @HostListener('mouseup', ['$event'])
@@ -68,7 +67,6 @@ export class AnchorPointComponent implements OnInit {
     if(AnchorPointComponent.isDrawing) {
       AnchorPointComponent.isDrawing = false;
       this.drawConnectionService.finishDrawing(this)
-      console.log("finished drawing");
     }
   }
 }

@@ -12,7 +12,6 @@ export class DrawConnectionService {
 
   startDrawing(anchorPoint: AnchorPointComponent) {
     this.startAnchor = anchorPoint;
-    console.log("anchor: ", anchorPoint);
   }
 
   finishDrawing(anchorPoint: AnchorPointComponent) {

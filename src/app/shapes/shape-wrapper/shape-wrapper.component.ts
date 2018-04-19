@@ -38,18 +38,10 @@ export class ShapeWrapperComponent {
 
   @HostListener('document:mousedown', ['$event']) deselect(event: MouseEvent, target: any) {
     if(this.isSelected) {
-      let minX = this.x;
-      let maxX = this.x + (this.width);
-      let minY = this.y;
-      let maxY = this.y + (this.height);
-      if(this.isSelected && (event.offsetX < minX || event.offsetX > maxX || event.offsetY < minY || event.offsetY > maxY) && !DomUtils.isChildOf(event.target as HTMLElement, "properties-panel")) {
+      console.log(this.constructor.name);
+      if (DomUtils.isClickOutsideShape(this, event) && !DomUtils.isChildOf(event.target as HTMLElement, "properties-panel")) {
         // deselect
         console.debug("click not on position");
-        this.isSelected = false;
-        this.shapeSelectorService.deselectElement.next(this.id);
-        this.unhighlight();
-      }
-      else if(this.isSelected && this.constructor.toString() === "ShapeConnectionComponent") {
         this.isSelected = false;
         this.shapeSelectorService.deselectElement.next(this.id);
         this.unhighlight();
@@ -87,7 +79,7 @@ export class ShapeWrapperComponent {
 
   @HostListener('document:mousemove', ['$event']) onMouseMove(event: MouseEvent) {
     // event.preventDefault();
-    if(this.isMouseDown && this.isDragging && this.isMovable) {
+    if (this.isMovable && this.isMouseDown && this.isDragging) {
       let x = event.offsetX - (this.width / 2);   // FIXME: different behaviour for ShapeConnectionComponent required because width and height are different
       let y = event.offsetY - (this.height / 2);  // FIXME: different behaviour for ShapeConnectionComponent required because width and height are different
       x = x + Constants.GRIDSIZE - x % Constants.GRIDSIZE;
