@@ -36,7 +36,7 @@ export class ShapeWrapperComponent {
     shapeSelectorService.registerShape(this);
   }
 
-  @HostListener('document:mousedown', ['$event', '$event.target']) deselect(event: MouseEvent, target: any) {
+  @HostListener('document:mousedown', ['$event']) deselect(event: MouseEvent, target: any) {
     if(this.isSelected) {
       let minX = this.x;
       let maxX = this.x + (this.width);
@@ -45,6 +45,11 @@ export class ShapeWrapperComponent {
       if(this.isSelected && (event.offsetX < minX || event.offsetX > maxX || event.offsetY < minY || event.offsetY > maxY) && !DomUtils.isChildOf(event.target as HTMLElement, "properties-panel")) {
         // deselect
         console.debug("click not on position");
+        this.isSelected = false;
+        this.shapeSelectorService.deselectElement.next(this.id);
+        this.unhighlight();
+      }
+      else if(this.isSelected && this.constructor.toString() === "ShapeConnectionComponent") {
         this.isSelected = false;
         this.shapeSelectorService.deselectElement.next(this.id);
         this.unhighlight();
@@ -87,10 +92,8 @@ export class ShapeWrapperComponent {
       let y = event.offsetY - (this.height / 2);  // FIXME: different behaviour for ShapeConnectionComponent required because width and height are different
       x = x + Constants.GRIDSIZE - x % Constants.GRIDSIZE;
       y = y + Constants.GRIDSIZE - y % Constants.GRIDSIZE;
-      this.x = x;
-      this.y = y;
-      this.renderer.setAttribute(this.elementRef.nativeElement, "x", x.toString());
-      this.renderer.setAttribute(this.elementRef.nativeElement, "y", y.toString());
+      this.setX(x);
+      this.setY(y);
     }
     else if(this.isResizing) {
       switch(this.resizeDirection) {

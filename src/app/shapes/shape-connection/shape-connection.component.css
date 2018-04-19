@@ -1,4 +1,5 @@
 .shape-connection-path {
     stroke: black;
     stroke-width: 3;
+    cursor: pointer;
 }
