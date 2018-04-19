@@ -1,27 +1,26 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
+import { AnchorPointComponent } from '../shapes/anchor-point/anchor-point.component';
 
 @Injectable()
 export class DrawConnectionService {
 
-  public drawConnection: Subject<any> = new Subject();
-  private startPosition: any;
-  private startAnchor: any;
+  public drawConnection: Subject<{startAnchor: AnchorPointComponent, endAnchor: AnchorPointComponent}> = new Subject();
+  private startAnchor: AnchorPointComponent;
 
   constructor() { }
 
-  startDrawing(startPosition, anchorPoint) {
-    this.startPosition = startPosition;
+  startDrawing(anchorPoint: AnchorPointComponent) {
+    this.startAnchor = anchorPoint;
     console.log("anchor: ", anchorPoint);
   }
 
-  finishDrawing(endPosition, anchorPoint) {
+  finishDrawing(anchorPoint: AnchorPointComponent) {
     let drawData = {
-      startPosition: this.startPosition,
-      endPosition: endPosition,
+      startAnchor: this.startAnchor,
+      endAnchor: anchorPoint
     };
     this.drawConnection.next(drawData);
-    this.startPosition = null;
   }
 
 }

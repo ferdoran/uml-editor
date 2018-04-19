@@ -1,10 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, Renderer2, HostListener } from '@angular/core';
-// import { Subscription } from 'rxjs/Subscription';
-// import { Observable } from 'rxjs/Observable';
 import { ShapeSelectorService } from '../../services/shape-selector.service';
 import { v4 as uuid } from 'uuid';
 import { DomUtils } from '../../utils/DomUtils';
 import { DrawConnectionService } from '../../services/draw-connection.service';
+import { Constants } from '../../constants';
 
 @Component({
   selector: '[shape-wrapper]',
@@ -20,7 +19,6 @@ export class ShapeWrapperComponent {
   protected isMouseDown: boolean = false;
   protected isDragging: boolean = false;
   public isSelected: boolean = false;
-  protected gridSize: number = 10;
   private readonly DRAG_TIMEOUT: number = 50;
   private dragTimer: NodeJS.Timer;
   public id: string;
@@ -30,7 +28,7 @@ export class ShapeWrapperComponent {
   protected movementX: number = 0;
   protected movementY: number = 0;
   protected anchorPoints: ElementRef;
-  protected isDrawingConnection: boolean = false;
+  protected isMovable: boolean = true;
 
   constructor(protected elementRef: ElementRef, protected renderer: Renderer2, protected shapeSelectorService: ShapeSelectorService, protected drawConnectionService: DrawConnectionService) {
     this.id = uuid();
@@ -46,7 +44,7 @@ export class ShapeWrapperComponent {
       let maxY = this.y + (this.height);
       if(this.isSelected && (event.offsetX < minX || event.offsetX > maxX || event.offsetY < minY || event.offsetY > maxY) && !DomUtils.isChildOf(event.target as HTMLElement, "properties-panel")) {
         // deselect
-        console.log("click not on position");
+        console.debug("click not on position");
         this.isSelected = false;
         this.shapeSelectorService.deselectElement.next(this.id);
         this.unhighlight();
@@ -62,7 +60,7 @@ export class ShapeWrapperComponent {
       this.select();
     }
     this.isMouseDown = true;
-    console.log("Mouse has been downed on me!", this.isSelected);
+    console.debug("Mouse has been downed on me!", this.isSelected);
     if(this.isMouseDown && !this.isResizing)
       this.isDragging = true;
     // this.dragTimer = setTimeout(() => {
@@ -78,18 +76,17 @@ export class ShapeWrapperComponent {
     this.isDragging = false;
     this.isResizing = false;
     this.resizeDirection = "";
-    this.isDrawingConnection = false;
     clearTimeout(this.dragTimer);
-    console.log("Mouse has been released");
+    console.debug("Mouse has been released");
   }
 
   @HostListener('document:mousemove', ['$event']) onMouseMove(event: MouseEvent) {
     // event.preventDefault();
-    if(this.isMouseDown && this.isDragging) {
+    if(this.isMouseDown && this.isDragging && this.isMovable) {
       let x = event.offsetX - (this.width / 2);   // FIXME: different behaviour for ShapeConnectionComponent required because width and height are different
       let y = event.offsetY - (this.height / 2);  // FIXME: different behaviour for ShapeConnectionComponent required because width and height are different
-      x = x + this.gridSize - x % this.gridSize;
-      y = y + this.gridSize - y % this.gridSize;
+      x = x + Constants.GRIDSIZE - x % Constants.GRIDSIZE;
+      y = y + Constants.GRIDSIZE - y % Constants.GRIDSIZE;
       this.x = x;
       this.y = y;
       this.renderer.setAttribute(this.elementRef.nativeElement, "x", x.toString());
@@ -189,7 +186,7 @@ export class ShapeWrapperComponent {
       let w: number = 0;
       let x: number = this.x;
       this.movementX += event.movementX;
-      if(this.movementX >= 10 || this.movementX <= -10) {
+      if(this.movementX >= Constants.GRIDSIZE || this.movementX <= -Constants.GRIDSIZE) {
         if (isNegative) {
           w = this.width - this.movementX;
           x = x + this.movementX;
@@ -211,7 +208,7 @@ export class ShapeWrapperComponent {
       let h: number = 0;
       let y: number = this.y;
       this.movementY += event.movementY;
-      if(this.movementY >= 10 || this.movementY <= -10) {
+      if(this.movementY >= Constants.GRIDSIZE || this.movementY <= -Constants.GRIDSIZE) {
         if (isNegative) {
           h = this.height - this.movementY;
           y = y + this.movementY;

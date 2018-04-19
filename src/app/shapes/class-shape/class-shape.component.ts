@@ -131,23 +131,4 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
     }
   }
 
-  startDrawingConnection(event: MouseEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-    if(!this.isDrawingConnection) {
-      this.isDrawingConnection = true;
-      this.drawConnectionService.startDrawing({x: event.offsetX, y: event.offsetY}, event.target);
-
-    }
-
-    console.log("started drawing");
-  }
-
-  finishDrawingConnection(event: MouseEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.isDrawingConnection = false;
-    this.drawConnectionService.finishDrawing({ x: event.offsetX, y: event.offsetY }, event.target);
-    console.log("finished drawing");
-  }
 }

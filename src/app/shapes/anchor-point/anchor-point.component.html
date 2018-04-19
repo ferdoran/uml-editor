@@ -1,0 +1,2 @@
+<svg:circle class="anchor-point-bg" [attr.cx]="cx" [attr.cy]="cy" [attr.r]="r+7" #background></svg:circle>
+<svg:circle class="anchor-point" [attr.cx]="cx" [attr.cy]="cy" [attr.r]="r" #anchorPoint (mouseenter)="toggleBackground($event)" (mouseleave)="toggleBackground($event)"></svg:circle>

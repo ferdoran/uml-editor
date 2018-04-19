@@ -13,7 +13,7 @@ For a live demo please navigate [here](http://185.243.8.129/uml-editor/).
 * Resizing of elements inside the editor panel
 * Display of element's properties
 * Manipluation of element's properties
-* Drawing lines between anchor points of Class Shapes (not resizable & movable properly yet)
+* Drawing sticky lines between anchor points of Class Shapes (not resizable & movable properly yet)
 
 ## Development server
 

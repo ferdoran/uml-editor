@@ -16,6 +16,7 @@ import { ShapeStencilComponent } from './shapes/shape-stencil/shape-stencil.comp
 import { ShapeDropService } from './services/shape-drop.service';
 import { ShapeConnectionComponent } from './shapes/shape-connection/shape-connection.component';
 import { DrawConnectionService } from './services/draw-connection.service';
+import { AnchorPointComponent } from './shapes/anchor-point/anchor-point.component';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { DrawConnectionService } from './services/draw-connection.service';
     ClassShapeComponent,
     ShapeHostDirective,
     ShapeStencilComponent,
-    ShapeConnectionComponent
+    ShapeConnectionComponent,
+    AnchorPointComponent
   ],
   imports: [
     BrowserModule,

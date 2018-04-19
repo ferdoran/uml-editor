@@ -22,56 +22,32 @@
 </svg:g>
 
 <svg:g class="d-none" #anchorPoints>
-    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
-        <svg:circle class="anchor-point-bg" [attr.cx]="width / 4" cy="0" r="10"></svg:circle>
-        <svg:circle class="anchor-point" [attr.cx]="width / 4" cy="0" r="3"></svg:circle>
+    <svg:g class="anchor-point-wrapper" shapeAnchorPoint  [centerX]="width / 4" [centerY]="0" [radius]="3" [parent]="this">
     </svg:g>
-    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
-        <svg:circle class="anchor-point-bg" [attr.cx]="width / 2" cy="0" r="10"></svg:circle>
-        <svg:circle class="anchor-point" [attr.cx]="width / 2" cy="0" r="3"></svg:circle>
+    <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="width / 2" [centerY]="0" [radius]="3" [parent]="this" >
     </svg:g>
-    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
-        <svg:circle class="anchor-point-bg" [attr.cx]="width * 0.75" cy="0" r="10"></svg:circle>
-        <svg:circle class="anchor-point" [attr.cx]="width * 0.75" cy="0" r="3"></svg:circle>
+    <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="width * 0.75" [centerY]="0" [radius]="3" [parent]="this" >
     </svg:g>
 
-    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
-        <svg:circle class="anchor-point-bg" cx="0" [attr.cy]="height / 4" r="10"></svg:circle>
-        <svg:circle class="anchor-point" cx="0" [attr.cy]="height / 4" r="3"></svg:circle>
+    <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="0" [centerY]="height / 4" [radius]="3" [parent]="this" >
     </svg:g>
-    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
-        <svg:circle class="anchor-point-bg" [attr.cx]="width" [attr.cy]="height / 4" r="10"></svg:circle>
-        <svg:circle class="anchor-point" [attr.cx]="width" [attr.cy]="height / 4" r="3"></svg:circle>
+    <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="width" [centerY]="height / 4" [radius]="3" [parent]="this" >
     </svg:g>
 
-    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
-        <svg:circle class="anchor-point-bg" cx="0" [attr.cy]="height / 2" r="10"></svg:circle>
-        <svg:circle class="anchor-point" cx="0" [attr.cy]="height / 2" r="3"></svg:circle>
+    <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="0" [centerY]="height / 2" [radius]="3" [parent]="this" >
     </svg:g>
-    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
-        <svg:circle class="anchor-point-bg" [attr.cx]="width" [attr.cy]="height / 2" r="10"></svg:circle>
-        <svg:circle class="anchor-point" [attr.cx]="width" [attr.cy]="height / 2" r="3"></svg:circle>
+    <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="width" [centerY]="height / 2" [radius]="3" [parent]="this" >
     </svg:g>
 
-    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
-        <svg:circle class="anchor-point-bg" cx="0" [attr.cy]="height * 0.75" r="10"></svg:circle>
-        <svg:circle class="anchor-point" cx="0" [attr.cy]="height * 0.75" r="3"></svg:circle>
+    <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="0" [centerY]="height * 0.75" [radius]="3" [parent]="this" >
     </svg:g>
-    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
-        <svg:circle class="anchor-point-bg" [attr.cx]="width" [attr.cy]="height * 0.75" r="10"></svg:circle>
-        <svg:circle class="anchor-point" [attr.cx]="width" [attr.cy]="height * 0.75" r="3"></svg:circle>
+    <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="width" [centerY]="height * 0.75" [radius]="3" [parent]="this" >
     </svg:g>
 
-    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
-        <svg:circle class="anchor-point-bg" [attr.cx]="width / 4" [attr.cy]="height" r="10"></svg:circle>
-        <svg:circle class="anchor-point" [attr.cx]="width / 4" [attr.cy]="height" r="3"></svg:circle>
+    <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="width / 4" [centerY]="height" [radius]="3" [parent]="this" >
     </svg:g>
-    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
-        <svg:circle class="anchor-point-bg" [attr.cx]="width / 2" [attr.cy]="height" r="10"></svg:circle>
-        <svg:circle class="anchor-point" [attr.cx]="width / 2" [attr.cy]="height" r="3"></svg:circle>
+    <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="width / 2" [centerY]="height" [radius]="3" [parent]="this" >
     </svg:g>
-    <svg:g class="anchor-point-wrapper" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
-        <svg:circle class="anchor-point-bg" [attr.cx]="width * 0.75" [attr.cy]="height" r="10"></svg:circle>
-        <svg:circle class="anchor-point" [attr.cx]="width * 0.75" [attr.cy]="height" r="3"></svg:circle>
+    <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="width * 0.75" [centerY]="height" [radius]="3" [parent]="this" >
     </svg:g>
 </svg:g>

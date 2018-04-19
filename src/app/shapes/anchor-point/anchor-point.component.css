@@ -1,0 +1,9 @@
+.anchor-point-bg {
+    visibility: hidden;
+    fill: rgba(128, 232, 128, 0.761);
+}
+
+.anchor-point {
+    cursor: default;
+    fill: blue;
+}

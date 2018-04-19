@@ -1,32 +1,30 @@
-import { Component, OnInit, Renderer2, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Renderer2, ElementRef, AfterViewInit, OnChanges } from '@angular/core';
 import { ShapeWrapperComponent } from '../shape-wrapper/shape-wrapper.component';
 import { ShapeSelectorService } from '../../services/shape-selector.service';
 import { DrawConnectionService } from '../../services/draw-connection.service';
+import { AnchorPointComponent } from '../anchor-point/anchor-point.component';
 
 @Component({
   selector: 'svg.shape-connection',
   templateUrl: './shape-connection.component.html',
   styleUrls: ['./shape-connection.component.css']
 })
-export class ShapeConnectionComponent extends ShapeWrapperComponent implements OnInit, AfterViewInit {
+export class ShapeConnectionComponent extends ShapeWrapperComponent implements OnInit, AfterViewInit, OnChanges {
 
   constructor(protected renderer: Renderer2, protected elementRef: ElementRef, protected shapeSelectorService: ShapeSelectorService, protected drawConnectionService: DrawConnectionService) {
     super(elementRef, renderer, shapeSelectorService, drawConnectionService);
    }
 
-  pathDescription: string = "";
-  element1: ShapeWrapperComponent; // TODO: add reference to connected element
-  element2: ShapeWrapperComponent; // TODO: add reference to connected element
-  startPosition: any = { x: 0, y: 0 };
-  endPosition: any = { x: 0, y: 0 };
+  element1: ShapeWrapperComponent;
+  element2: ShapeWrapperComponent;
+  startAnchor: AnchorPointComponent;
+  endAnchor: AnchorPointComponent;
 
   ngOnInit() {
-    this.width = 200;
-    this.height = 100;
+    this.isMovable = false;
   }
 
   ngAfterViewInit() {
-    this.updateViewBox();
     this.setX(this.x);
     this.setY(this.y);
     this.renderer.setStyle(this.elementRef.nativeElement, "stroke", "black");
@@ -34,29 +32,30 @@ export class ShapeConnectionComponent extends ShapeWrapperComponent implements O
     this.renderer.setStyle(this.elementRef.nativeElement, "cursor", "move");
   }
 
-  setStartPosition(newPos) {
-    this.startPosition = newPos;
-    this.updateViewBox();
+  ngOnChanges() {
   }
 
-  setEndPosition(newPos) {
-    this.endPosition = newPos;
-    this.updateViewBox();
+  setStartAnchor(anchorPoint: AnchorPointComponent) {
+    this.startAnchor = anchorPoint;
+    this.element1 = this.startAnchor.parent;
   }
 
-  setPathDescription(pathDesc: string) {
-    this.pathDescription = pathDesc;
-    // this.renderer.setAttribute(this.elementRef.nativeElement, "d", this.pathDescription);
+  setEndAnchor(anchorPoint: AnchorPointComponent) {
+    this.endAnchor = anchorPoint;
+    this.element2 = this.endAnchor.parent;
   }
 
   updateViewBox() {
-    let w = this.endPosition.x > this.startPosition.x ? this.endPosition.x : this.startPosition.x;
-    let h = this.endPosition.y > this.startPosition.y ? this.endPosition.y : this.startPosition.y;
-    h += 3; // Have to consider line stroke width
-    this.width = w;
-    this.height = h;
-    this.renderer.setAttribute(this.elementRef.nativeElement, "width", this.width.toString())
-    this.renderer.setAttribute(this.elementRef.nativeElement, "height", this.height.toString())
+    if(this.startAnchor && this.endAnchor) {
+      let w = this.endAnchor.getRealX() > this.startAnchor.getRealX() ? this.endAnchor.getRealX() : this.startAnchor.getRealX();
+      let h = this.endAnchor.getRealY() > this.startAnchor.getRealY() ? this.endAnchor.getRealY() : this.startAnchor.getRealY();
+      h += 3; // Have to consider line stroke width
+      this.width = w;
+      this.height = h;
+      this.renderer.setAttribute(this.elementRef.nativeElement, "width", this.width.toString())
+      this.renderer.setAttribute(this.elementRef.nativeElement, "height", this.height.toString())
+    }
+
   }
 
 }
