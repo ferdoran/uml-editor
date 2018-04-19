@@ -29,32 +29,13 @@ export class ShapeConnectionComponent extends ShapeWrapperComponent implements O
     this.setY(this.y);
   }
 
-  ngOnChanges() {
-  }
-
   setStartAnchor(anchorPoint: AnchorPointComponent) {
     this.startAnchor = anchorPoint;
     this.element1 = this.startAnchor.parent;
-    this.updateViewBox();
   }
 
   setEndAnchor(anchorPoint: AnchorPointComponent) {
     this.endAnchor = anchorPoint;
     this.element2 = this.endAnchor.parent;
-    this.updateViewBox();
   }
-
-  updateViewBox() {
-    if(this.startAnchor && this.endAnchor) {
-      let w = this.endAnchor.getRealX() > this.startAnchor.getRealX() ? this.endAnchor.getRealX() : this.startAnchor.getRealX();
-      let h = this.endAnchor.getRealY() > this.startAnchor.getRealY() ? this.endAnchor.getRealY() : this.startAnchor.getRealY();
-      h += 3; // Have to consider line stroke width
-      this.width = w;
-      this.height = h;
-      this.renderer.setAttribute(this.elementRef.nativeElement, "width", this.width.toString());
-      this.renderer.setAttribute(this.elementRef.nativeElement, "height", this.height.toString());
-    }
-
-  }
-
 }
