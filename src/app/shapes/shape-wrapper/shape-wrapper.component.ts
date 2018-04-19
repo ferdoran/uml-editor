@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, Renderer2, HostListener } from '@angular/core';
+import { Component, ViewChild, ElementRef, Renderer2, HostListener } from '@angular/core';
 import { ShapeSelectorService } from '../../services/shape-selector.service';
 import { v4 as uuid } from 'uuid';
 import { DomUtils } from '../../utils/DomUtils';
@@ -31,14 +31,13 @@ export class ShapeWrapperComponent {
   protected isMovable: boolean = true;
 
   constructor(protected elementRef: ElementRef, protected renderer: Renderer2, protected shapeSelectorService: ShapeSelectorService, protected drawConnectionService: DrawConnectionService) {
-    this.id = uuid();
-    renderer.setAttribute(this.elementRef.nativeElement, "id", this.id);
-    shapeSelectorService.registerShape(this);
+      this.id = uuid();
+      this.renderer.setAttribute(this.elementRef.nativeElement, "id", this.id);
+      this.shapeSelectorService.registerShape(this);
   }
 
   @HostListener('document:mousedown', ['$event']) deselect(event: MouseEvent, target: any) {
     if(this.isSelected) {
-      console.log(this.constructor.name);
       if (DomUtils.isClickOutsideShape(this, event) && !DomUtils.isChildOf(event.target as HTMLElement, "properties-panel")) {
         // deselect
         console.debug("click not on position");
