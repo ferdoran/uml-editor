@@ -6,16 +6,17 @@ import { DrawConnectionService } from '../../services/draw-connection.service';
 import { Constants } from '../../constants';
 
 @Component({
-  selector: '[shape-wrapper]',
-  // templateUrl: './shape-wrapper.component.html',
-  template: '',
-  styleUrls: ['./shape-wrapper.component.css']
+    selector: '[shape-wrapper]',
+    // templateUrl: './shape-wrapper.component.html',
+    template: '',
+    styleUrls: ['./shape-wrapper.component.css']
 })
 export class ShapeWrapperComponent {
   public width: number;
   public height: number;
   public x?: number = 0;
   public y?: number = 0;
+  protected type: string = "none";
   protected isMouseDown: boolean = false;
   protected isDragging: boolean = false;
   public isSelected: boolean = false;
@@ -27,8 +28,26 @@ export class ShapeWrapperComponent {
   protected resizeDirection: string = "";
   protected movementX: number = 0;
   protected movementY: number = 0;
-  protected anchorPoints: ElementRef;
+  protected anchorPointsWrapper: ElementRef;
   protected isMovable: boolean = true;
+  public hasInitializedView: boolean = false;
+
+  public serialize(): string {
+    let s = {
+      type: this.type,
+      position: {
+        x: this.x,
+        y: this.y
+      },
+      dimensions: {
+        width: this.width,
+        height: this.height
+      }
+    };
+
+    return JSON.stringify(s);
+  }
+
 
   constructor(protected elementRef: ElementRef, protected renderer: Renderer2, protected shapeSelectorService: ShapeSelectorService, protected drawConnectionService: DrawConnectionService) {
       this.id = uuid();
@@ -145,11 +164,18 @@ export class ShapeWrapperComponent {
     this.updateViewBox();
   }
 
+  public setId(id: string) {
+    this.shapeSelectorService.removeShape(this.id);
+    this.id = id;
+    this.renderer.setAttribute(this.elementRef.nativeElement, "id", this.id);
+    this.shapeSelectorService.registerShape(this);
+  }
+
   @HostListener('mouseenter') protected highlight() {
     if(!this.isSelected) {
       this.renderer.setStyle(this.elementRef.nativeElement, "outline", "1px dashed green");
-      if(this.anchorPoints)
-        this.renderer.removeClass(this.anchorPoints.nativeElement, "d-none");
+      if(this.anchorPointsWrapper)
+        this.renderer.removeClass(this.anchorPointsWrapper.nativeElement, "d-none");
     }
   }
 
@@ -158,8 +184,8 @@ export class ShapeWrapperComponent {
     // draw resizable rect
     if(this.resizeShape)
       this.renderer.removeClass(this.resizeShape.nativeElement, "d-none");
-    if(this.anchorPoints)
-      this.renderer.addClass(this.anchorPoints.nativeElement, "d-none");
+    if(this.anchorPointsWrapper)
+      this.renderer.addClass(this.anchorPointsWrapper.nativeElement, "d-none");
 
   }
 
@@ -168,8 +194,8 @@ export class ShapeWrapperComponent {
       this.renderer.setStyle(this.elementRef.nativeElement, "outline", "none");
       if (this.resizeShape)
         this.renderer.addClass(this.resizeShape.nativeElement, "d-none");
-      if (this.anchorPoints)
-        this.renderer.addClass(this.anchorPoints.nativeElement, "d-none");
+      if (this.anchorPointsWrapper)
+        this.renderer.addClass(this.anchorPointsWrapper.nativeElement, "d-none");
     }
   }
 

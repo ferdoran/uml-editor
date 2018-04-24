@@ -17,6 +17,10 @@ import { ShapeDropService } from './services/shape-drop.service';
 import { ShapeConnectionComponent } from './shapes/shape-connection/shape-connection.component';
 import { DrawConnectionService } from './services/draw-connection.service';
 import { AnchorPointComponent } from './shapes/anchor-point/anchor-point.component';
+import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
+import { SocketService } from './services/socket.service';
+
+const config: SocketIoConfig = { url: 'http://localhost:3020', options: {} };
 
 
 @NgModule({
@@ -26,23 +30,24 @@ import { AnchorPointComponent } from './shapes/anchor-point/anchor-point.compone
     PropertiesComponent,
     ToolbarComponent,
     EditorComponent,
-    ShapeWrapperComponent,
     ClassShapeComponent,
     ShapeHostDirective,
     ShapeStencilComponent,
     ShapeConnectionComponent,
+    ShapeWrapperComponent,
     AnchorPointComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    NgbModule.forRoot()
+    NgbModule.forRoot(),
+    SocketIoModule.forRoot(config)
   ],
   entryComponents: [
     ClassShapeComponent,
     ShapeConnectionComponent
   ],
-  providers: [ShapeSelectorService, ShapeDropService, DrawConnectionService],
+  providers: [ShapeSelectorService, ShapeDropService, DrawConnectionService, SocketService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

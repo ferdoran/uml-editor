@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2, ElementRef, DoCheck } from '@angular/core';
+import { Component, OnInit, Renderer2, ElementRef, DoCheck, AfterViewInit } from '@angular/core';
 import { ShapeWrapperComponent } from '../shape-wrapper/shape-wrapper.component';
 import { ShapeSelectorService } from '../../services/shape-selector.service';
 import { DrawConnectionService } from '../../services/draw-connection.service';
@@ -9,7 +9,7 @@ import { AnchorPointComponent } from '../anchor-point/anchor-point.component';
   templateUrl: './shape-connection.component.html',
   styleUrls: ['./shape-connection.component.css']
 })
-export class ShapeConnectionComponent extends ShapeWrapperComponent implements OnInit, DoCheck {
+export class ShapeConnectionComponent extends ShapeWrapperComponent implements OnInit, DoCheck, AfterViewInit {
 
   constructor(protected renderer: Renderer2, protected elementRef: ElementRef, protected shapeSelectorService: ShapeSelectorService, protected drawConnectionService: DrawConnectionService) {
     super(elementRef, renderer, shapeSelectorService, drawConnectionService);
@@ -26,14 +26,22 @@ export class ShapeConnectionComponent extends ShapeWrapperComponent implements O
   y2: number = 0;
 
   ngOnInit() {
+    this.type = "Connection";
     this.isMovable = false;
   }
 
+  ngAfterViewInit() {
+    this.hasInitializedView = true;
+  }
+
   ngDoCheck() {
-    this.x1 = this.startAnchor.getRealX();
-    this.x2 = this.endAnchor.getRealX();
-    this.y1 = this.startAnchor.getRealY();
-    this.y2 = this.endAnchor.getRealY();
+    if(this.startAnchor && this.endAnchor) {
+
+      this.x1 = this.startAnchor.getRealX();
+      this.x2 = this.endAnchor.getRealX();
+      this.y1 = this.startAnchor.getRealY();
+      this.y2 = this.endAnchor.getRealY();
+    }
   }
 
   setStartAnchor(anchorPoint: AnchorPointComponent) {
@@ -44,5 +52,35 @@ export class ShapeConnectionComponent extends ShapeWrapperComponent implements O
   setEndAnchor(anchorPoint: AnchorPointComponent) {
     this.endAnchor = anchorPoint;
     this.element2 = this.endAnchor.parent;
+  }
+
+  public serialize(): string {
+    let s = {
+      id: this.id,
+      type: this.type,
+      position: {
+        x: this.x,
+        y: this.y
+      },
+      from: {
+        element: this.element1.id,
+        anchorPoint: {
+          x: this.x1,
+          y: this.y1
+        }
+      },
+      to: {
+        element: this.element2.id,
+        anchorPoint: {
+          x: this.x2,
+          y: this.y2
+        }
+      },
+      dimensions: {
+        width: this.width,
+        height: this.height
+      }
+    };
+    return JSON.stringify(s);
   }
 }

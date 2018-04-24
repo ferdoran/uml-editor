@@ -29,4 +29,10 @@ export class ShapeSelectorService {
     let shape = this.getShape(id);
     this.deselectElement.next(shape);
   }
+
+  removeShape(id: string) {
+    let shape = this.getShape(id);
+    let idx = this.shapes.indexOf(shape);
+    this.shapes.splice(idx, 1);
+  }
 }

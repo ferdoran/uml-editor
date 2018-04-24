@@ -21,7 +21,7 @@
     <svg:circle [attr.cx]="width" [attr.cy]="height" r="5" class="resize-point" style="cursor: se-resize" (mousedown)="startResize($event, 'se')"></svg:circle>
 </svg:g>
 
-<svg:g class="d-none" #anchorPoints>
+<svg:g class="d-none" #anchorPointsWrapper>
     <svg:g class="anchor-point-wrapper" shapeAnchorPoint  [centerX]="width / 4" [centerY]="0" [radius]="3" [parent]="this">
     </svg:g>
     <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="width / 2" [centerY]="0" [radius]="3" [parent]="this" >

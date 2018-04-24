@@ -1,19 +1,20 @@
-import { Component, OnInit, ElementRef, Renderer2, AfterViewInit, ViewContainerRef, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, ElementRef, Renderer2, AfterViewInit, ViewContainerRef, ViewChild, HostListener, ViewChildren, QueryList, ChangeDetectorRef } from '@angular/core';
 import { ShapeWrapperComponent } from '../shape-wrapper/shape-wrapper.component';
 import { Subscription } from 'rxjs/Subscription';
 import { element } from 'protractor';
 import { ShapeSelectorService } from '../../services/shape-selector.service';
 import { DrawConnectionService } from '../../services/draw-connection.service';
+import { AnchorPointComponent } from '../anchor-point/anchor-point.component';
 
 @Component({
   selector: 'svg.class-shape ',
   templateUrl: './class-shape.component.html',
-  styleUrls: ['./class-shape.component.css']
+  styleUrls: ['./class-shape.component.css'],
+  providers: [AnchorPointComponent]
 })
 export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit, AfterViewInit {
   stereotype: string = "<<class>>";
   name: string = "Class";
-  html: string;
   nameRectHeight: number = 10;
   attrRectHeight: number = 10;
   methRectHeight: number = 10;
@@ -29,9 +30,10 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
   @ViewChild('methRect') methRect: ElementRef;
   @ViewChild('resizeRect') resizeGroup: ElementRef;
   @ViewChild('displayGroup') displayGroup: ElementRef;
-  @ViewChild('anchorPoints') protected anchorPoints: ElementRef;
+  @ViewChild('anchorPointsWrapper') protected anchorPointsWrapper: ElementRef;
+  @ViewChildren(AnchorPointComponent) anchorPoints: QueryList<AnchorPointComponent>;
 
-  constructor(protected elementRef: ElementRef, protected renderer: Renderer2, protected shapeSelectorService: ShapeSelectorService, protected drawConnectionService: DrawConnectionService) {
+  constructor(public checker: ChangeDetectorRef,protected elementRef: ElementRef, protected renderer: Renderer2, protected shapeSelectorService: ShapeSelectorService, protected drawConnectionService: DrawConnectionService) {
     super(elementRef, renderer, shapeSelectorService, drawConnectionService);
     this.width = 200;
     this.height = 100;
@@ -39,6 +41,7 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
 
   ngOnInit() {
     this.updateHeights();
+    this.type = "Class";
   }
 
   ngAfterViewInit() {
@@ -50,6 +53,7 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
 
     this.resizeShape = this.resizeGroup;
     this.updateViewBox();
+    this.hasInitializedView = true;
   }
 
   updateHeights() {
@@ -79,6 +83,16 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
     this.methRectHeight = methRectHeight * heightRatio;
 
     // this.setHeight(nameRectHeight + attrRectHeight + methRectHeight);
+  }
+
+  public getAnchorPointFromCoordinate(x: number, y: number): AnchorPointComponent {
+    if(this.anchorPoints) {
+      return this.anchorPoints.find(ap => {
+        if (ap.getRealX() === x && ap.getRealY() === y)
+          return true;
+        return false;
+      });
+    }
   }
 
   public setX(x: number) {
@@ -129,6 +143,34 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
       this.isResizing = false;
       this.resizeDirection = "";
     }
+  }
+
+  public serialize(): string {
+    let s = {
+      id: this.id,
+      type: this.type,
+      stereotype: this.stereotype,
+      name: this.name,
+      attributes: this.attributes,
+      methods: this.methods,
+      position: {
+        x: this.x,
+        y: this.y
+      },
+      dimensions: {
+        width: this.width,
+        height: this.height
+      },
+      innerDimensions: {
+        attrRectHeight: this.attrRectHeight,
+        methRectHeight: this.methRectHeight,
+        nameRectHeight: this.nameRectHeight
+      },
+      style: {
+        fontSize: this.fontSize
+      }
+    };
+    return JSON.stringify(s);
   }
 
 }
