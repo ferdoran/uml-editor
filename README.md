@@ -6,6 +6,10 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 For a live demo please navigate [here](http://185.243.8.129/uml-editor/).
 
+## WebSocket Server
+
+If you want to check out the WebSocket server implementation just check out the [uml-server repository](https://github.com/rmuelle4/uml-server).
+
 ## Current Features
 
 * Drag and Drop of Class Shapes from Shape-Menu to editor panel
