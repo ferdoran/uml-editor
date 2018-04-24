@@ -14,6 +14,7 @@ For a live demo please navigate [here](http://185.243.8.129/uml-editor/).
 * Display of element's properties
 * Manipluation of element's properties
 * Drawing sticky lines between anchor points of Class Shapes (not resizable & movable properly yet)
+* Import/Export of model as JSON (NOT in GUI yet)
 
 ## Development server
 
