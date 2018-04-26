@@ -33,7 +33,7 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
   @ViewChild('anchorPointsWrapper') protected anchorPointsWrapper: ElementRef;
   @ViewChildren(AnchorPointComponent) anchorPoints: QueryList<AnchorPointComponent>;
 
-  constructor(public checker: ChangeDetectorRef,protected elementRef: ElementRef, protected renderer: Renderer2, protected shapeSelectorService: ShapeSelectorService, protected drawConnectionService: DrawConnectionService) {
+  constructor(public checker: ChangeDetectorRef, protected elementRef: ElementRef, protected renderer: Renderer2, protected shapeSelectorService: ShapeSelectorService, protected drawConnectionService: DrawConnectionService) {
     super(elementRef, renderer, shapeSelectorService, drawConnectionService);
     this.width = 200;
     this.height = 100;

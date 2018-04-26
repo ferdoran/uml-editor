@@ -9,6 +9,8 @@ import { DomUtils } from '../../utils/DomUtils';
 import { AnchorPointComponent } from '../../shapes/anchor-point/anchor-point.component';
 import { Constants } from '../../constants';
 import { SocketService } from '../../services/socket.service';
+import { EntityComponent } from '../../shapes/entity/entity.component';
+import { ValueObjectComponent } from '../../shapes/value-object/value-object.component';
 
 @Component({
   selector: 'app-editor',
@@ -40,6 +42,16 @@ export class EditorComponent implements OnInit, AfterViewInit {
       }
       else if (droppedData.type === "interface") {
 
+      }
+      else if (droppedData.type === "entity") {
+        var x = droppedData.x - this.elementRef.nativeElement.offsetLeft;
+        var y = droppedData.y - this.elementRef.nativeElement.offsetTop;
+        this.createEntity({ x: x, y: y });
+      }
+      else if (droppedData.type === "valueobject") {
+        var x = droppedData.x - this.elementRef.nativeElement.offsetLeft;
+        var y = droppedData.y - this.elementRef.nativeElement.offsetTop;
+        this.createValueObject({ x: x, y: y });
       }
     });
 
@@ -79,6 +91,43 @@ export class EditorComponent implements OnInit, AfterViewInit {
     this.elements.push(compRef);
   }
 
+  private createEntity(position) {
+    let cmpFac = this.compFacRes.resolveComponentFactory(EntityComponent);
+    let classViewConRef = this.shapeHost.viewContainerRef;
+
+    let compRef = classViewConRef.createComponent(cmpFac);
+    compRef.instance.name = "Class";
+
+    let x = position.x - (compRef.instance.width / 2);
+    x = x - x % Constants.GRIDSIZE;
+
+    let y = position.y - (compRef.instance.height / 2);
+    y = y - y % Constants.GRIDSIZE;
+
+    compRef.instance.x = x;
+    compRef.instance.y = y;
+
+    this.elements.push(compRef);
+  }
+
+  private createValueObject(position) {
+    let cmpFac = this.compFacRes.resolveComponentFactory(ValueObjectComponent);
+    let classViewConRef = this.shapeHost.viewContainerRef;
+
+    let compRef = classViewConRef.createComponent(cmpFac);
+    compRef.instance.name = "Class";
+
+    let x = position.x - (compRef.instance.width / 2);
+    x = x - x % Constants.GRIDSIZE;
+
+    let y = position.y - (compRef.instance.height / 2);
+    y = y - y % Constants.GRIDSIZE;
+
+    compRef.instance.x = x;
+    compRef.instance.y = y;
+
+    this.elements.push(compRef);
+  }
 
   private createClassShape(position) {
 

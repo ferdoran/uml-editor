@@ -19,6 +19,8 @@ import { DrawConnectionService } from './services/draw-connection.service';
 import { AnchorPointComponent } from './shapes/anchor-point/anchor-point.component';
 import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
 import { SocketService } from './services/socket.service';
+import { ValueObjectComponent } from './shapes/value-object/value-object.component';
+import { EntityComponent } from './shapes/entity/entity.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3020', options: {} };
 
@@ -35,7 +37,9 @@ const config: SocketIoConfig = { url: 'http://localhost:3020', options: {} };
     ShapeStencilComponent,
     ShapeConnectionComponent,
     ShapeWrapperComponent,
-    AnchorPointComponent
+    AnchorPointComponent,
+    ValueObjectComponent,
+    EntityComponent
   ],
   imports: [
     BrowserModule,
@@ -45,7 +49,9 @@ const config: SocketIoConfig = { url: 'http://localhost:3020', options: {} };
   ],
   entryComponents: [
     ClassShapeComponent,
-    ShapeConnectionComponent
+    ShapeConnectionComponent,
+    EntityComponent,
+    ValueObjectComponent
   ],
   providers: [ShapeSelectorService, ShapeDropService, DrawConnectionService, SocketService],
   bootstrap: [AppComponent]

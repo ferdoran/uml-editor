@@ -1,0 +1,24 @@
+.resize-rect {
+    fill: transparent;
+    stroke: white;
+    stroke-width: 2;
+    stroke-dasharray: 5, 5;
+}
+
+.resize-point {
+    fill: #4286f4;
+}
+
+.anchor-point {
+    cursor: default;
+    fill: blue;
+}
+
+.anchor-point-wrapper:hover > .anchor-point-bg {
+    fill: rgba(128, 232, 128, 0.761);
+    visibility: visible;
+}
+
+.anchor-point-bg {
+    visibility: hidden;
+}

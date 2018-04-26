@@ -20,6 +20,26 @@
 
     </svg>
   </svg>
+  <svg class="w-100 shape-row">
+    <svg app-shape-stencil shapeType="entity" [layer]="dragLayer" x="25">
+      <svg:g>
+        <svg:rect x="0" y="0" width="120" height="70" class="shape-row-shape"></svg:rect>
+        <svg:text x="20" y="40" class="shape-row-text">
+          &lt;&lt;Entity&gt;&gt;
+        </svg:text>
+      </svg:g>
+
+    </svg>
+    <svg app-shape-stencil shapeType="valueobject" [layer]="dragLayer" x="170">
+      <svg:g>
+        <svg:rect x="0" y="0" width="120" height="70" class="shape-row-shape"></svg:rect>
+        <svg:text x="0" y="40" class="shape-row-text">
+          &lt;&lt;ValueObject&gt;&gt;
+        </svg:text>
+      </svg:g>
+
+    </svg>
+  </svg>
   <svg>
 
   </svg>

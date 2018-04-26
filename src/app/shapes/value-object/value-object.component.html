@@ -1,0 +1,60 @@
+<svg:g class="display-group" #displayGroup>
+  <svg:rect class="name-rect" x="0" y="0" [attr.width]="width" [attr.height]="nameRectHeight" style="fill: white; stroke: black; stroke-width: 2;"
+    #nameRect></svg:rect>
+  <svg:text font-family="Helvetica" [attr.width]="width" [attr.height]="height" font-size="10" [attr.x]="width/2" [attr.y]="nameRectHeight / 2"
+    style="fill: black;" text-anchor="middle" #stereotypeText> {{ stereotype }}</svg:text>
+  <svg:text font-family="Helvetica" [attr.width]="width" [attr.height]="height" font-size="10" [attr.x]="width/2" [attr.y]="nameRectHeight / 2 + 10"
+    style="fill: black;" text-anchor="middle" #nameText> {{ name }} </svg:text>
+
+  <svg:rect class="attr-rect" x="0" [attr.y]="nameRectHeight" [attr.width]="width" [attr.height]="attrRectHeight" style="fill: white; stroke: black; stroke-width: 2;"
+    #attrRect></svg:rect>
+  <svg:text font-family="Helvetica" [attr.width]="width" [attr.height]="height" font-size="10" [attr.x]="10" [attr.y]="nameRectHeight + (i+2) * fontSize"
+    style="fill: black;" text-anchor="start" *ngFor="let attr of attributes; let i = index"> {{ attr }} </svg:text>
+  <svg:rect class="methods-rect" x="0" [attr.y]="nameRectHeight + attrRectHeight" [attr.width]="width" [attr.height]="methRectHeight"
+    style="fill: white; stroke: black; stroke-width: 2;" #methRect></svg:rect>
+  <svg:text font-family="Helvetica" [attr.width]="width" [attr.height]="height" font-size="10" [attr.x]="10" [attr.y]="nameRectHeight + attrRectHeight + (i+2) * fontSize"
+    style="fill: black;" text-anchor="start" *ngFor="let meth of methods; let i = index"> {{ meth }} </svg:text>
+</svg:g>
+
+<svg:g class="d-none" #resizeRect>
+  <svg:rect class="resize-rect" x="0" y="0" [attr.height]="nameRectHeight + attrRectHeight + methRectHeight" [attr.width]="width"></svg:rect>
+  <svg:circle cx="0" cy="0" r="5" class="resize-point" style="cursor: nw-resize" (mousedown)="startResize($event, 'nw')"></svg:circle>
+  <svg:circle [attr.cx]="width / 2" cy="0" r="5" class="resize-point" style="cursor: n-resize" (mousedown)="startResize($event, 'n')"></svg:circle>
+  <svg:circle [attr.cx]="width" cy="0" r="5" class="resize-point" style="cursor: ne-resize" (mousedown)="startResize($event, 'ne')"></svg:circle>
+  <svg:circle cx="0" [attr.cy]="height / 2" r="5" class="resize-point" style="cursor: w-resize" (mousedown)="startResize($event, 'w')"></svg:circle>
+  <svg:circle [attr.cx]="width" [attr.cy]="height / 2" r="5" class="resize-point" style="cursor: e-resize" (mousedown)="startResize($event, 'e')"></svg:circle>
+  <svg:circle cx="0" [attr.cy]="height" r="5" class="resize-point" style="cursor: sw-resize" (mousedown)="startResize($event, 'sw')"></svg:circle>
+  <svg:circle [attr.cx]="width / 2" [attr.cy]="height" r="5" class="resize-point" style="cursor: s-resize" (mousedown)="startResize($event, 's')"></svg:circle>
+  <svg:circle [attr.cx]="width" [attr.cy]="height" r="5" class="resize-point" style="cursor: se-resize" (mousedown)="startResize($event, 'se')"></svg:circle>
+</svg:g>
+
+<svg:g class="d-none" #anchorPointsWrapper>
+  <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="width / 4" [centerY]="0" [radius]="3" [parent]="this">
+  </svg:g>
+  <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="width / 2" [centerY]="0" [radius]="3" [parent]="this">
+  </svg:g>
+  <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="width * 0.75" [centerY]="0" [radius]="3" [parent]="this">
+  </svg:g>
+
+  <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="0" [centerY]="height / 4" [radius]="3" [parent]="this">
+  </svg:g>
+  <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="width" [centerY]="height / 4" [radius]="3" [parent]="this">
+  </svg:g>
+
+  <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="0" [centerY]="height / 2" [radius]="3" [parent]="this">
+  </svg:g>
+  <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="width" [centerY]="height / 2" [radius]="3" [parent]="this">
+  </svg:g>
+
+  <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="0" [centerY]="height * 0.75" [radius]="3" [parent]="this">
+  </svg:g>
+  <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="width" [centerY]="height * 0.75" [radius]="3" [parent]="this">
+  </svg:g>
+
+  <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="width / 4" [centerY]="height" [radius]="3" [parent]="this">
+  </svg:g>
+  <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="width / 2" [centerY]="height" [radius]="3" [parent]="this">
+  </svg:g>
+  <svg:g class="anchor-point-wrapper" shapeAnchorPoint [centerX]="width * 0.75" [centerY]="height" [radius]="3" [parent]="this">
+  </svg:g>
+</svg:g>
