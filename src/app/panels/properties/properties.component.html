@@ -54,6 +54,28 @@
       </div>
     </li>
   </ul>
+
+  <h3 class="text-center">Aggregate</h3>
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <label for="aggSelect" class="input-group-text">Aggregate</label>
+    </div>
+    <select class="custom-select" id="aggSelect" (change)="selectedAggregate($event.target.value)">
+      <option value="0">None</option>
+      <ng-container *ngFor="let agg of aggregateService.aggregates" >
+        <option selected *ngIf="aggregateService.getAggregateForClass(selectedElement) !== null && aggregateService.getAggregateForClass(selectedElement).name === agg.name" [value]="agg.name">
+           {{ agg.name }}
+        </option>
+        <option [value]="agg.name" *ngIf="aggregateService.getAggregateForClass(selectedElement) !== null && aggregateService.getAggregateForClass(selectedElement).name
+        !== agg.name">
+          {{ agg.name }}
+        </option>
+        <option [value]="agg.name" *ngIf="aggregateService.getAggregateForClass(selectedElement) === null">
+          {{ agg.name }}
+        </option>
+      </ng-container>
+    </select>
+  </div>
 </ng-container>
 </div>
 

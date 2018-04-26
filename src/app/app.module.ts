@@ -21,6 +21,8 @@ import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
 import { SocketService } from './services/socket.service';
 import { ValueObjectComponent } from './shapes/value-object/value-object.component';
 import { EntityComponent } from './shapes/entity/entity.component';
+import { AggregatesComponent } from './panels/aggregates/aggregates.component';
+import { AggregateService } from './services/aggregate.service';
 
 const config: SocketIoConfig = { url: 'http://localhost:3020', options: {} };
 
@@ -39,7 +41,8 @@ const config: SocketIoConfig = { url: 'http://localhost:3020', options: {} };
     ShapeWrapperComponent,
     AnchorPointComponent,
     ValueObjectComponent,
-    EntityComponent
+    EntityComponent,
+    AggregatesComponent
   ],
   imports: [
     BrowserModule,
@@ -53,7 +56,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3020', options: {} };
     EntityComponent,
     ValueObjectComponent
   ],
-  providers: [ShapeSelectorService, ShapeDropService, DrawConnectionService, SocketService],
+  providers: [ShapeSelectorService, ShapeDropService, DrawConnectionService, SocketService, AggregateService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -23,7 +23,7 @@ app-shape-menu {
     top: 15%;
     left: 0;
     width: 20%;
-    height: 85%;
+    height: 42.5%;
     position: fixed;
     background-color: #f0f0f0;
     z-index: 0;
@@ -48,5 +48,15 @@ app-editor {
     width: 70%;
     position: fixed;
     background-color: #fafafa;
+    z-index: 0;
+}
+
+app-aggregates {
+    top: 57.5%;
+    left: 0;
+    width: 20%;
+    height: 42.5%;
+    position: fixed;
+    background-color: #f0f0f0;
     z-index: 0;
 }

@@ -3,6 +3,7 @@ import { ShapeSelectorService } from '../../services/shape-selector.service';
 import { ShapeWrapperComponent } from '../../shapes/shape-wrapper/shape-wrapper.component';
 import { Subscription } from 'rxjs/Subscription';
 import { ClassShapeComponent } from '../../shapes/class-shape/class-shape.component';
+import { AggregateService } from '../../services/aggregate.service';
 
 @Component({
   selector: 'app-properties',
@@ -17,7 +18,7 @@ export class PropertiesComponent implements OnInit {
   newAttrValue: string = "";
   newMethValue: string = "";
 
-  constructor(private shapeSelectorService: ShapeSelectorService) { }
+  constructor(private shapeSelectorService: ShapeSelectorService, public aggregateService: AggregateService) { }
 
 
   ngOnInit() {
@@ -63,6 +64,17 @@ export class PropertiesComponent implements OnInit {
     c.methods.push(this.newMethValue);
     this.newMethValue = "";
     c.updateHeights();
+  }
+
+  selectedAggregate(value) {
+    if(value === "0") {
+      let agg = this.aggregateService.getAggregateForClass(this.selectedElement as ClassShapeComponent);
+      if(agg !== null)
+        this.aggregateService.removeAggregateMember(agg.name, this.selectedElement as ClassShapeComponent);
+    }
+    else {
+      this.aggregateService.addAggregateMember(value, this.selectedElement as ClassShapeComponent, false);
+    }
   }
 
 }
