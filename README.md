@@ -19,6 +19,8 @@ If you want to check out the WebSocket server implementation just check out the 
 * Manipluation of element's properties
 * Drawing sticky lines between anchor points of Class Shapes (not resizable & movable properly yet)
 * Import/Export of model as JSON (NOT in GUI yet)
+* Definition of Aggregates
+* Adding Elements to Aggregates (Classes, Entities, Value Objects);
 
 ## Development server
 
