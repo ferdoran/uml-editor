@@ -49,6 +49,7 @@ export class AggregatesComponent implements OnInit {
       let agg = new Aggregate(this.newAggregateName);
       agg.color = AggregatesComponent.colors[AggregatesComponent.nextColor++ % AggregatesComponent.colors.length];
       this.aggregates.push(agg);
+      this.newAggregateName = "";
     }
   }
 

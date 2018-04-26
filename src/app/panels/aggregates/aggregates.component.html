@@ -1,26 +1,28 @@
 <div id="aggregates">
   <h2 class="text-center">Aggregates</h2>
-  <ul class="list-group">
-    <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let agg of aggregates" [style.background-color]="agg.color">
-      <div class="input-group input-group-sm mb-1">
-        <input class="form-control rounded-0" [(ngModel)]="agg.name" minlength="1" />
-        <div class="input-group-append">
-          <button class="btn btn-secondary rounded-0" ngbTooltip="Remove" (click)="removeAggregate(agg.name)">
-            <i class="material-icons">delete</i>
-          </button>
+  <div id="aggregateList">
+    <ul class="list-group">
+      <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let agg of aggregates" [style.background-color]="agg.color">
+        <div class="input-group input-group-sm mb-1">
+          <input class="form-control rounded-0" [(ngModel)]="agg.name" minlength="1" />
+          <div class="input-group-append">
+            <button class="btn btn-secondary rounded-0" ngbTooltip="Remove" (click)="removeAggregate(agg.name)">
+              <i class="material-icons">delete</i>
+            </button>
+          </div>
         </div>
-      </div>
-      <span class="badge badge-primary badge-pill">{{ agg.members.length }}</span>
-    </li>
-    <li class="list-group-item">
-      <div class="input-group input-group-sm mb-1">
-        <input class="form-control rounded-0 add-input" minlength="1" [(ngModel)]="newAggregateName" />
-        <div class="input-group-append">
-          <button class="btn btn-secondary rounded-0 add-element" ngbTooltip="Add Aggregate" (click)="addAggregate()">
-            <i class="material-icons">add</i>
-          </button>
+        <span class="badge badge-primary badge-pill">{{ agg.members.length }}</span>
+      </li>
+      <li class="list-group-item">
+        <div class="input-group input-group-sm mb-1">
+          <input class="form-control rounded-0 add-input" minlength="1" [(ngModel)]="newAggregateName" />
+          <div class="input-group-append">
+            <button class="btn btn-secondary rounded-0 add-element" ngbTooltip="Add Aggregate" (click)="addAggregate()">
+              <i class="material-icons">add</i>
+            </button>
+          </div>
         </div>
-      </div>
-    </li>
-  </ul>
+      </li>
+    </ul>
+  </div>
 </div>

@@ -1,0 +1,26 @@
+input, .form-control {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+input + div.input-group-append>button{
+    visibility: hidden;
+}
+
+input:focus + div.input-group-append>button, input + div.input-group-append>button:hover, .form-control {
+    visibility: visible;
+}
+
+.add-input {
+    background: #f0f0f0;
+}
+
+input + div.input-group-append>button.add-element{
+    visibility: visible;
+}
+
+input:focus {
+    background: white;
+}
