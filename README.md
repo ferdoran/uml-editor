@@ -21,6 +21,7 @@ If you want to check out the WebSocket server implementation just check out the 
 * Import/Export of model as JSON (NOT in GUI yet)
 * Definition of Aggregates
 * Adding Elements to Aggregates (Classes, Entities, Value Objects);
+* Automatic creation of a background for aggregates
 
 ## Development server
 

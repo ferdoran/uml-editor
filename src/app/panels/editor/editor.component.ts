@@ -11,6 +11,9 @@ import { Constants } from '../../constants';
 import { SocketService } from '../../services/socket.service';
 import { EntityComponent } from '../../shapes/entity/entity.component';
 import { ValueObjectComponent } from '../../shapes/value-object/value-object.component';
+import { AggregateService } from '../../services/aggregate.service';
+import { Aggregate } from '../../aggregate';
+import { AggregateComponent } from '../../shapes/aggregate/aggregate.component';
 
 @Component({
   selector: 'app-editor',
@@ -27,7 +30,13 @@ export class EditorComponent implements OnInit, AfterViewInit {
   public static readonly GRIDSIZE = 10;
   public static readonly JSON_DOC = "{\"uml-model\": [{\"id\":\"b5e1ac70-d699-4201-8b2a-13472a60d47d\",\"type\":\"Class\",\"stereotype\":\"<<class>>\",\"name\":\"Class123\",\"attributes\":[],\"methods\":[],\"position\":{\"x\":80,\"y\":70},\"dimensions\":{\"width\":200,\"height\":100},\"innerDimensions\":{\"attrRectHeight\":0,\"methRectHeight\":0,\"nameRectHeight\":100},\"style\":{\"fontSize\":10}},{\"id\":\"73604a65-552a-443d-b52e-5535e458797a\",\"type\":\"Class\",\"stereotype\":\"<<class>>\",\"name\":\"COerson\",\"attributes\":[],\"methods\":[],\"position\":{\"x\":560,\"y\":130},\"dimensions\":{\"width\":200,\"height\":100},\"innerDimensions\":{\"attrRectHeight\":0,\"methRectHeight\":0,\"nameRectHeight\":100},\"style\":{\"fontSize\":10}},{\"id\":\"310c567a-4aee-4156-bf86-3d36879bfb71\",\"type\":\"Connection\",\"position\":{\"x\":0,\"y\":0},\"from\":{\"element\":\"b5e1ac70-d699-4201-8b2a-13472a60d47d\",\"anchorPoint\":{\"x\":280,\"y\":95}},\"to\":{\"element\":\"73604a65-552a-443d-b52e-5535e458797a\",\"anchorPoint\":{\"x\":560,\"y\":155}},\"dimensions\":{}}]}";
 
-  constructor(private compFacRes: ComponentFactoryResolver, private shapeDropService: ShapeDropService, private elementRef: ElementRef, private _renderer: Renderer2, private _drawConnectionService: DrawConnectionService, private socketService: SocketService) { }
+  constructor(private compFacRes: ComponentFactoryResolver,
+    private shapeDropService: ShapeDropService,
+    private elementRef: ElementRef,
+    private _renderer: Renderer2,
+    private _drawConnectionService: DrawConnectionService,
+    private socketService: SocketService,
+    private aggregateService: AggregateService) { }
 
   ngOnInit() {
     let classFac = this.compFacRes.resolveComponentFactory(ClassShapeComponent);
@@ -57,6 +66,43 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
     this._drawConnectionService.drawConnection.subscribe(drawData => {
       this.drawPath(drawData.startAnchor, drawData.endAnchor);
+    });
+
+    this.aggregateService.aggregateAdded.subscribe(agg => {
+      this.createAggregate(agg);
+    });
+
+    this.aggregateService.aggregateRemoved.subscribe(agg => {
+      let idx = this.elements.findIndex(elem => elem.instance.id === agg.name);
+      let elem = this.elements[idx];
+
+      this.elements.splice(idx, 1);
+      elem.destroy();
+    })
+
+    this.aggregateService.memberAdded.subscribe(data => {
+
+      // remove from other aggregates first
+      let oldAgg = this.aggregateService.aggregates.forEach(agg => {
+        agg.removeMember(data.element);
+      });
+
+      // add to new aggregate
+      let agg = this.aggregateService.aggregates.find(element => element.name === data.aggName);
+      agg.addMember(data.element, data.isRoot);
+
+      let elem = this.getElementById(data.aggName);
+      elem.updateViewBox();
+      // this.updateAggregatePolyPoints(agg);
+    });
+
+    this.aggregateService.memberRemoved.subscribe(data => {
+      let agg = this.aggregateService.aggregates.find(element => element.name === data.aggName);
+      agg.removeMember(data.element);
+
+      let elem = this.getElementById(data.aggName);
+      elem.updateViewBox();
+      // this.updateAggregatePolyPoints(agg);
     })
   }
 
@@ -145,6 +191,20 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
     compRef.instance.x = x;
     compRef.instance.y = y;
+
+    this.elements.push(compRef);
+  }
+
+  private createAggregate(aggregate: Aggregate) {
+    let cmpFac = this.compFacRes.resolveComponentFactory(AggregateComponent);
+    let classViewConRef = this.shapeHost.viewContainerRef;
+
+    let compRef = classViewConRef.createComponent(cmpFac, 0);
+
+    compRef.instance.setId(aggregate.name);
+    compRef.instance.agg = aggregate;
+    aggregate.view = compRef.instance;
+    compRef.instance.updateViewBox();
 
     this.elements.push(compRef);
   }

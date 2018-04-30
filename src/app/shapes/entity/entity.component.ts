@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef, ElementRef, Renderer2, AfterViewI
 import { ClassShapeComponent } from '../class-shape/class-shape.component';
 import { ShapeSelectorService } from '../../services/shape-selector.service';
 import { DrawConnectionService } from '../../services/draw-connection.service';
+import { AggregateService } from '../../services/aggregate.service';
 
 @Component({
   selector: 'svg.entity-shape',
@@ -10,8 +11,13 @@ import { DrawConnectionService } from '../../services/draw-connection.service';
 })
 export class EntityComponent extends ClassShapeComponent implements OnInit, AfterViewInit {
 
-  constructor(public checker: ChangeDetectorRef, protected elementRef: ElementRef, protected renderer: Renderer2, protected shapeSelectorService: ShapeSelectorService, protected drawConnectionService: DrawConnectionService) {
-    super(checker, elementRef, renderer, shapeSelectorService, drawConnectionService);
+  constructor(public checker: ChangeDetectorRef,
+    protected elementRef: ElementRef,
+    protected renderer: Renderer2,
+    protected shapeSelectorService: ShapeSelectorService,
+    protected drawConnectionService: DrawConnectionService,
+    protected aggregateService: AggregateService) {
+    super(checker, elementRef, renderer, shapeSelectorService, drawConnectionService, aggregateService);
   }
 
   ngOnInit() {

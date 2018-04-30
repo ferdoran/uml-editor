@@ -8,6 +8,8 @@ export class AggregateService {
 
   memberAdded: Subject<{aggName: string, element: ClassShapeComponent, isRoot: boolean}> = new Subject();
   memberRemoved: Subject<{ aggName: string, element: ClassShapeComponent }> = new Subject();
+  aggregateAdded: Subject<Aggregate> = new Subject();
+  aggregateRemoved: Subject<Aggregate> = new Subject();
   aggregates: Aggregate[] = [];
 
   constructor() { }

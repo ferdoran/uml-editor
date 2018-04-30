@@ -138,7 +138,7 @@ export class ShapeWrapperComponent {
     }
   }
 
-  protected updateViewBox() {
+  public updateViewBox() {
     this.renderer.setAttribute(this.elementRef.nativeElement, "viewBox", "-5 -5 " + (this.width + 10) + " " + (this.height + 10));
   }
 

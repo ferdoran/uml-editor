@@ -1,10 +1,12 @@
 import { AggregateMember } from "./aggregate-member";
 import { ClassShapeComponent } from "./shapes/class-shape/class-shape.component";
+import { AggregateComponent } from "./shapes/aggregate/aggregate.component";
 
 export class Aggregate {
     name: string;
     color: string;
     members: AggregateMember[] = [];
+    view: AggregateComponent;
 
     constructor(name: string) {
         this.name = name;
@@ -65,5 +67,9 @@ export class Aggregate {
 
     removeAggregateRoot() {
         this.members.forEach(elem => elem.isAggregateRoot = false);
+    }
+
+    public updateView() {
+        this.view.updateViewBox();
     }
 }

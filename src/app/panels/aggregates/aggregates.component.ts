@@ -19,22 +19,22 @@ export class AggregatesComponent implements OnInit {
 
     this.aggregateService.aggregates = this.aggregates;
 
-    this.aggregateService.memberAdded.subscribe(data => {
+    // this.aggregateService.memberAdded.subscribe(data => {
 
-      // remove from other aggregates first
-      let oldAgg = this.aggregates.forEach(agg => {
-        agg.removeMember(data.element);
-      });
+    //   // remove from other aggregates first
+    //   let oldAgg = this.aggregates.forEach(agg => {
+    //     agg.removeMember(data.element);
+    //   });
 
-      // add to new aggregate
-      let agg = this.aggregates.find(element => element.name === data.aggName);
-      agg.addMember(data.element, data.isRoot);
-    });
+    //   // add to new aggregate
+    //   let agg = this.aggregates.find(element => element.name === data.aggName);
+    //   agg.addMember(data.element, data.isRoot);
+    // });
 
-    this.aggregateService.memberRemoved.subscribe(data => {
-      let agg = this.aggregates.find(element => element.name === data.aggName);
-      agg.removeMember(data.element);
-    });
+    // this.aggregateService.memberRemoved.subscribe(data => {
+    //   let agg = this.aggregates.find(element => element.name === data.aggName);
+    //   agg.removeMember(data.element);
+    // });
 
     // let a1 = new Aggregate("First Agg");
     // a1.color = "green";
@@ -50,6 +50,7 @@ export class AggregatesComponent implements OnInit {
       agg.color = AggregatesComponent.colors[AggregatesComponent.nextColor++ % AggregatesComponent.colors.length];
       this.aggregates.push(agg);
       this.newAggregateName = "";
+      this.aggregateService.aggregateAdded.next(agg);
     }
   }
 
@@ -58,5 +59,6 @@ export class AggregatesComponent implements OnInit {
     let agg = this.aggregates[idx];
     agg.members.splice(0, agg.members.length);
     this.aggregates.splice(idx, 1);
+    this.aggregateService.aggregateRemoved.next(agg);
   }
 }

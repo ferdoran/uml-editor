@@ -5,6 +5,7 @@ import { element } from 'protractor';
 import { ShapeSelectorService } from '../../services/shape-selector.service';
 import { DrawConnectionService } from '../../services/draw-connection.service';
 import { AnchorPointComponent } from '../anchor-point/anchor-point.component';
+import { AggregateService } from '../../services/aggregate.service';
 
 @Component({
   selector: 'svg.class-shape ',
@@ -33,7 +34,13 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
   @ViewChild('anchorPointsWrapper') protected anchorPointsWrapper: ElementRef;
   @ViewChildren(AnchorPointComponent) anchorPoints: QueryList<AnchorPointComponent>;
 
-  constructor(public checker: ChangeDetectorRef, protected elementRef: ElementRef, protected renderer: Renderer2, protected shapeSelectorService: ShapeSelectorService, protected drawConnectionService: DrawConnectionService) {
+  constructor(public checker: ChangeDetectorRef,
+    protected elementRef: ElementRef,
+    protected renderer: Renderer2,
+    protected shapeSelectorService: ShapeSelectorService,
+    protected drawConnectionService: DrawConnectionService,
+    protected aggregateService: AggregateService)
+  {
     super(elementRef, renderer, shapeSelectorService, drawConnectionService);
     this.width = 200;
     this.height = 100;
@@ -101,6 +108,7 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
     this.renderer.setAttribute(this.elementRef.nativeElement, "x", this.x.toString());
     this.renderer.setAttribute(this.stereotypeText.nativeElement, "x", (this.width / 2).toString());
     this.renderer.setAttribute(this.nameText.nativeElement, "x", (this.width / 2).toString());
+    this.updateAggregate();
   }
 
   public setHeight(h: number) {
@@ -109,7 +117,7 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
       this.renderer.setAttribute(this.elementRef.nativeElement, "height", this.height.toString());
       this.updateViewBox();
       this.updateHeights();
-
+      this.updateAggregate();
     }
   }
 
@@ -117,7 +125,15 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
     if(w > 0) {
       this.width = w;
       this.renderer.setAttribute(this.elementRef.nativeElement, "width", this.width.toString());
-      super.updateViewBox();
+      this.updateViewBox();
+      this.updateAggregate();
+    }
+  }
+
+  protected updateAggregate() {
+    let agg = this.aggregateService.getAggregateForClass(this);
+    if(agg) {
+      agg.updateView();
     }
   }
 
@@ -127,6 +143,7 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
     this.renderer.setAttribute(this.elementRef.nativeElement, "y", this.y.toString());
     this.renderer.setAttribute(this.stereotypeText.nativeElement, "y", (this.nameRectHeight / 2).toString());
     this.renderer.setAttribute(this.nameText.nativeElement, "y", (this.nameRectHeight / 2 + 10).toString());
+    this.updateAggregate();
   }
 
   startResize(event: MouseEvent, direction: string) {

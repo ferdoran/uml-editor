@@ -23,6 +23,7 @@ import { ValueObjectComponent } from './shapes/value-object/value-object.compone
 import { EntityComponent } from './shapes/entity/entity.component';
 import { AggregatesComponent } from './panels/aggregates/aggregates.component';
 import { AggregateService } from './services/aggregate.service';
+import { AggregateComponent } from './shapes/aggregate/aggregate.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3020', options: {} };
 
@@ -42,7 +43,8 @@ const config: SocketIoConfig = { url: 'http://localhost:3020', options: {} };
     AnchorPointComponent,
     ValueObjectComponent,
     EntityComponent,
-    AggregatesComponent
+    AggregatesComponent,
+    AggregateComponent
   ],
   imports: [
     BrowserModule,
@@ -54,7 +56,8 @@ const config: SocketIoConfig = { url: 'http://localhost:3020', options: {} };
     ClassShapeComponent,
     ShapeConnectionComponent,
     EntityComponent,
-    ValueObjectComponent
+    ValueObjectComponent,
+    AggregateComponent
   ],
   providers: [ShapeSelectorService, ShapeDropService, DrawConnectionService, SocketService, AggregateService],
   bootstrap: [AppComponent]

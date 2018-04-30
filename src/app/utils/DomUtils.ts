@@ -1,4 +1,5 @@
 import { ShapeWrapperComponent } from "../shapes/shape-wrapper/shape-wrapper.component";
+import { Aggregate } from "../aggregate";
 
 export class DomUtils {
 
@@ -35,7 +36,7 @@ export class DomUtils {
 
     public static isClickOutsideShape(shape: ShapeWrapperComponent, event: MouseEvent) {
         let minX, maxX, minY, maxY;
-        if(shape.constructor.name !== "ShapeConnectionComponent") {
+        if(shape.constructor.name !== "ShapeConnectionComponent" && shape.constructor.name !== "AggregateComponent") {
             minX = shape.x;
             maxX = shape.x + (shape.width);
             minY = shape.y;
