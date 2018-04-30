@@ -32,4 +32,38 @@ export class Aggregate {
 
         return -1;
     }
+
+    getMember(element: ClassShapeComponent) {
+        let idx = this.existMember(element);
+        if(idx >= 0) {
+            return this.members[idx];
+        }
+    }
+
+    setAggregateRoot(element: ClassShapeComponent): boolean  {
+        let idx = this.existMember(element);
+        if(idx >= 0) {
+            // Check if Aggregate Root already exists
+            let roots = this.members.filter(elem => elem.isAggregateRoot === true);
+            if(roots.length > 1) {
+                // only 1 aggregate root may exist
+                console.error(new Error("Too many Aggregate Roots for [" + this.name + "]"));
+                return false;
+            }
+            else if(roots.length === 1 && roots[0] !== this.members[idx]) {
+                // aggregate root already exists
+                console.error(new Error("Already got an aggregate root for [" + this.name + "]"));
+                return false;
+            }
+            else if(roots.length === 0) {
+                this.members[idx].isAggregateRoot = true;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    removeAggregateRoot() {
+        this.members.forEach(elem => elem.isAggregateRoot = false);
+    }
 }

@@ -44,7 +44,7 @@ ul > li {
 }
 
 .input-group-append button {
-    padding: .1rem .1rem;
+    /* padding: .1rem .1rem; */
     line-height: 1;
 }
 /* input.form-control {

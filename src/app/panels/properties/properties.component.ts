@@ -77,4 +77,22 @@ export class PropertiesComponent implements OnInit {
     }
   }
 
+  triggerAggregateRoot(event) {
+    console.log("triggered aggregate root change");
+    let agg = this.aggregateService.getAggregateForClass(this.selectedElement as ClassShapeComponent);
+    if(agg !== null) {
+      if(event.checked) {
+        if(!agg.setAggregateRoot(this.selectedElement as ClassShapeComponent)){
+          event.checked = false;
+        }
+      }
+      else {
+        agg.removeAggregateRoot();
+      }
+    }
+    else {
+      event.checked = false;
+    }
+  }
+
 }
