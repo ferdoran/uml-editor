@@ -1,11 +1,13 @@
 
 
 <div id="properties-panel">
-  <!-- <h2 class="text-center">Properties</h2> -->
+  <h2 class="text-center">Properties</h2>
 <ng-container *ngIf="selectedElement && constr && (constr.name === 'ClassShapeComponent' || constr.name === 'EntityComponent' || constr.name === 'ValueObjectComponent')">
-  <h3 class="text-center">Name</h3>
   <div class="w-80 mx-auto input-group input-group-sm mb-1">
     <input class="form-control rounded-0" type="text" [(ngModel)]="selectedElement['name']" name="class-name" />
+  </div>
+  <div class="w-80 mx-auto input-group input-group-sm mb-1">
+    <input class="form-control rounded-0" type="text" [(ngModel)]="selectedElement['stereotype']" name="class-name" />
   </div>
   <h3 class="text-center">Attributes</h3>
   <ul>
