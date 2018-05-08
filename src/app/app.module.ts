@@ -24,6 +24,9 @@ import { EntityComponent } from './shapes/entity/entity.component';
 import { AggregatesComponent } from './panels/aggregates/aggregates.component';
 import { AggregateService } from './services/aggregate.service';
 import { AggregateComponent } from './shapes/aggregate/aggregate.component';
+import { BoundedContextsComponent } from './panels/bounded-contexts/bounded-contexts.component';
+import { BoundedContextService } from './services/bounded-context.service';
+import { BoundedContextComponent } from './shapes/bounded-context/bounded-context.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3020', options: {} };
 
@@ -44,7 +47,9 @@ const config: SocketIoConfig = { url: 'http://localhost:3020', options: {} };
     ValueObjectComponent,
     EntityComponent,
     AggregatesComponent,
-    AggregateComponent
+    AggregateComponent,
+    BoundedContextsComponent,
+    BoundedContextComponent
   ],
   imports: [
     BrowserModule,
@@ -57,9 +62,10 @@ const config: SocketIoConfig = { url: 'http://localhost:3020', options: {} };
     ShapeConnectionComponent,
     EntityComponent,
     ValueObjectComponent,
-    AggregateComponent
+    AggregateComponent,
+    BoundedContextComponent
   ],
-  providers: [ShapeSelectorService, ShapeDropService, DrawConnectionService, SocketService, AggregateService],
+  providers: [ShapeSelectorService, ShapeDropService, DrawConnectionService, SocketService, AggregateService, BoundedContextService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,19 +1,22 @@
-import { Component, OnInit, ChangeDetectorRef, ElementRef, Renderer2, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, Renderer2 } from '@angular/core';
 import { ShapeWrapperComponent } from '../shape-wrapper/shape-wrapper.component';
-import { DrawConnectionService } from '../../services/draw-connection.service';
 import { ShapeSelectorService } from '../../services/shape-selector.service';
-import { Aggregate } from '../../aggregate';
+import { DrawConnectionService } from '../../services/draw-connection.service';
+import { BoundedContext } from '../../bounded-context';
 import * as concaveman from "concaveman";
 
 @Component({
-  selector: 'svg.aggregate',
-  templateUrl: './aggregate.component.html',
-  styleUrls: ['./aggregate.component.css']
+  selector: 'svg.bounded-context',
+  templateUrl: './bounded-context.component.html',
+  styleUrls: ['./bounded-context.component.css']
 })
-export class AggregateComponent extends ShapeWrapperComponent implements OnInit, AfterViewInit {
+export class BoundedContextComponent extends ShapeWrapperComponent implements OnInit, AfterViewInit {
 
   polyPoints: string;
-  agg: Aggregate;
+  bc: BoundedContext;
+  fill: string = "none";
+  strokeWidth: number = 5;
+  strokeDash: string = "10,10";
 
   protected cx: number = 0;
   protected cy: number = 0;
@@ -22,10 +25,10 @@ export class AggregateComponent extends ShapeWrapperComponent implements OnInit,
 
   constructor(protected elementRef: ElementRef, protected renderer: Renderer2, protected shapeSelectorService: ShapeSelectorService, protected drawConnectionService: DrawConnectionService) {
     super(elementRef, renderer, shapeSelectorService, drawConnectionService);
-   }
+  }
 
   ngOnInit() {
-    this.type = "Aggregate";
+    this.type = "BoundedContext";
     this.isMovable = false;
     this.isDeletable = false;
   }
@@ -35,10 +38,10 @@ export class AggregateComponent extends ShapeWrapperComponent implements OnInit,
   }
 
   public updateViewBox() {
-    if(this.agg && this.agg.members.length > 0) {
+    if (this.bc && this.bc.members.length > 0) {
       let points = [];
 
-      this.agg.members.forEach(member => {
+      this.bc.members.forEach(member => {
         let x1 = member.element.x;
         let x2 = member.element.x + member.element.width;
         let y1 = member.element.y;
@@ -55,13 +58,13 @@ export class AggregateComponent extends ShapeWrapperComponent implements OnInit,
       let polyPoints = "";
       poly.forEach((point, index) => {
         polyPoints += point[0] + "," + point[1];
-        if(index < poly.length - 1) {
+        if (index < poly.length - 1) {
           polyPoints += " ";
         }
       });
       this.polyPoints = polyPoints;
     }
-    else if (this.agg && this.agg.members.length === 0) {
+    else if(this.bc && this.bc.members.length === 0) {
       this.polyPoints = "";
     }
   }

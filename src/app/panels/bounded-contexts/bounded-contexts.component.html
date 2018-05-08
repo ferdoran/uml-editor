@@ -1,0 +1,28 @@
+<div id="bounded-contexts">
+  <h2 class="text-center">Bounded Contexts</h2>
+  <div id="bcList">
+    <ul class="list-group">
+      <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let ctx of contexts" [style.background-color]="ctx.color">
+        <div class="input-group input-group-sm mb-1">
+          <input class="form-control rounded-0" [(ngModel)]="ctx.name" minlength="1" />
+          <div class="input-group-append">
+            <button class="btn btn-secondary rounded-0" ngbTooltip="Remove" (click)="removeBoundedContext(ctx.name)">
+              <i class="material-icons">delete</i>
+            </button>
+          </div>
+        </div>
+        <span class="badge badge-primary badge-pill">{{ ctx.members.length }}</span>
+      </li>
+      <li class="list-group-item">
+        <div class="input-group input-group-sm mb-1">
+          <input class="form-control rounded-0 add-input" minlength="1" [(ngModel)]="newContextName" />
+          <div class="input-group-append">
+            <button class="btn btn-secondary rounded-0 add-element" ngbTooltip="Add Bounded Context" (click)="addBoundedContext()">
+              <i class="material-icons">add</i>
+            </button>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

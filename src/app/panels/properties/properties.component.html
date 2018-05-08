@@ -81,6 +81,30 @@
     <input class="" type="checkbox"  name="aggregateRoot" id="chkAggRoot" [checked]="aggregateService.getAggregateForClass(selectedElement) === null ? false : aggregateService.getAggregateForClass(selectedElement).getMember(selectedElement).isAggregateRoot" (change)="triggerAggregateRoot($event.target)">
     <label for="chkAggRoot" class="">Aggregate Root</label>
   </div>
+
+
+  <h3 class="text-center">Bounded Contexts</h3>
+  <div class="w-80 mx-auto input-group mb-3">
+    <div class="input-group-prepend">
+      <label for="bcSelect" class="input-group-text">Bounded Contexts</label>
+    </div>
+    <select class="custom-select" id="bcSelect" (change)="selectedBoundedContext($event.target.value)" multiple>
+      <option value="0">None</option>
+      <ng-container *ngFor="let bc of bcService.contexts">
+        <option selected *ngIf="bcService.getBoundedContextForClass(selectedElement) !== null && bcService.getBoundedContextForClass(selectedElement).name === bc.name"
+          [value]="bc.name">
+          {{ bc.name }}
+        </option>
+        <option [value]="bc.name" *ngIf="bcService.getBoundedContextForClass(selectedElement) !== null && bcService.getBoundedContextForClass(selectedElement).name
+            !== bc.name">
+          {{ bc.name }}
+        </option>
+        <option [value]="bc.name" *ngIf="bcService.getBoundedContextForClass(selectedElement) === null">
+          {{ bc.name }}
+        </option>
+      </ng-container>
+    </select>
+  </div>
 </ng-container>
 </div>
 

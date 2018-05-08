@@ -6,6 +6,7 @@ import { ShapeSelectorService } from '../../services/shape-selector.service';
 import { DrawConnectionService } from '../../services/draw-connection.service';
 import { AnchorPointComponent } from '../anchor-point/anchor-point.component';
 import { AggregateService } from '../../services/aggregate.service';
+import { BoundedContextService } from '../../services/bounded-context.service';
 
 @Component({
   selector: 'svg.class-shape ',
@@ -39,7 +40,8 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
     protected renderer: Renderer2,
     protected shapeSelectorService: ShapeSelectorService,
     protected drawConnectionService: DrawConnectionService,
-    protected aggregateService: AggregateService)
+    protected aggregateService: AggregateService,
+    protected bcService: BoundedContextService)
   {
     super(elementRef, renderer, shapeSelectorService, drawConnectionService);
     this.width = 200;
@@ -108,7 +110,7 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
     this.renderer.setAttribute(this.elementRef.nativeElement, "x", this.x.toString());
     this.renderer.setAttribute(this.stereotypeText.nativeElement, "x", (this.width / 2).toString());
     this.renderer.setAttribute(this.nameText.nativeElement, "x", (this.width / 2).toString());
-    this.updateAggregate();
+    this.updateAggregateAndBC();
   }
 
   public setHeight(h: number) {
@@ -117,7 +119,7 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
       this.renderer.setAttribute(this.elementRef.nativeElement, "height", this.height.toString());
       this.updateViewBox();
       this.updateHeights();
-      this.updateAggregate();
+      this.updateAggregateAndBC();
     }
   }
 
@@ -126,14 +128,18 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
       this.width = w;
       this.renderer.setAttribute(this.elementRef.nativeElement, "width", this.width.toString());
       this.updateViewBox();
-      this.updateAggregate();
+      this.updateAggregateAndBC();
     }
   }
 
-  protected updateAggregate() {
+  protected updateAggregateAndBC() {
     let agg = this.aggregateService.getAggregateForClass(this);
     if(agg) {
       agg.updateView();
+    }
+    let bc = this.bcService.getBoundedContextForClass(this);
+    if(bc) {
+      bc.updateView();
     }
   }
 
@@ -143,7 +149,7 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
     this.renderer.setAttribute(this.elementRef.nativeElement, "y", this.y.toString());
     this.renderer.setAttribute(this.stereotypeText.nativeElement, "y", (this.nameRectHeight / 2).toString());
     this.renderer.setAttribute(this.nameText.nativeElement, "y", (this.nameRectHeight / 2 + 10).toString());
-    this.updateAggregate();
+    this.updateAggregateAndBC();
   }
 
   startResize(event: MouseEvent, direction: string) {
@@ -189,5 +195,8 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
     };
     return JSON.stringify(s);
   }
+
+
+
 
 }

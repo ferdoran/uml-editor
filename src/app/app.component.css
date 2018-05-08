@@ -43,7 +43,7 @@ app-shape-menu {
     top: 15%;
     left: 0;
     width: 20%;
-    height: 42.5%;
+    height: 32.5%;
     position: fixed;
     background-color: #f0f0f0;
     z-index: 0;
@@ -72,10 +72,21 @@ app-editor {
 }
 
 app-aggregates {
-    top: 57.5%;
+    top: 47.5%;
     left: 0;
     width: 20%;
-    height: 42.5%;
+    height: 25%;
+    position: fixed;
+    background-color: #f0f0f0;
+    z-index: 0;
+    overflow-y: scroll;
+}
+
+app-bounded-contexts {
+    top: 72.5%;
+    left: 0;
+    width: 20%;
+    height: 27.5%;
     position: fixed;
     background-color: #f0f0f0;
     z-index: 0;

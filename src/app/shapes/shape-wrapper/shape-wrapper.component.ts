@@ -31,6 +31,7 @@ export class ShapeWrapperComponent {
   protected anchorPointsWrapper: ElementRef;
   protected isMovable: boolean = true;
   public hasInitializedView: boolean = false;
+  public isDeletable: boolean = true;
 
   public serialize(): string {
     let s = {

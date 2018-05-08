@@ -4,6 +4,7 @@ import { ShapeWrapperComponent } from '../../shapes/shape-wrapper/shape-wrapper.
 import { Subscription } from 'rxjs/Subscription';
 import { ClassShapeComponent } from '../../shapes/class-shape/class-shape.component';
 import { AggregateService } from '../../services/aggregate.service';
+import { BoundedContextService } from '../../services/bounded-context.service';
 
 @Component({
   selector: 'app-properties',
@@ -18,7 +19,7 @@ export class PropertiesComponent implements OnInit {
   newAttrValue: string = "";
   newMethValue: string = "";
 
-  constructor(private shapeSelectorService: ShapeSelectorService, public aggregateService: AggregateService) { }
+  constructor(private shapeSelectorService: ShapeSelectorService, public aggregateService: AggregateService, public bcService: BoundedContextService) { }
 
 
   ngOnInit() {
@@ -74,6 +75,17 @@ export class PropertiesComponent implements OnInit {
     }
     else {
       this.aggregateService.addAggregateMember(value, this.selectedElement as ClassShapeComponent, false);
+    }
+  }
+
+  selectedBoundedContext(value) {
+    if (value === "0") {
+      let bc = this.bcService.getBoundedContextForClass(this.selectedElement as ClassShapeComponent);
+      if (bc !== null)
+        this.bcService.removeBoundedContextMember(bc.name, this.selectedElement as ClassShapeComponent);
+    }
+    else {
+      this.bcService.addBoundedContextMember(value, this.selectedElement as ClassShapeComponent);
     }
   }
 

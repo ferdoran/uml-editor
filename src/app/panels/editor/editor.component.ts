@@ -14,6 +14,9 @@ import { ValueObjectComponent } from '../../shapes/value-object/value-object.com
 import { AggregateService } from '../../services/aggregate.service';
 import { Aggregate } from '../../aggregate';
 import { AggregateComponent } from '../../shapes/aggregate/aggregate.component';
+import { BoundedContextService } from '../../services/bounded-context.service';
+import { BoundedContext } from '../../bounded-context';
+import { BoundedContextComponent } from '../../shapes/bounded-context/bounded-context.component';
 
 @Component({
   selector: 'app-editor',
@@ -36,7 +39,8 @@ export class EditorComponent implements OnInit, AfterViewInit {
     private _renderer: Renderer2,
     private _drawConnectionService: DrawConnectionService,
     private socketService: SocketService,
-    private aggregateService: AggregateService) { }
+    private aggregateService: AggregateService,
+    private bcService: BoundedContextService) { }
 
   ngOnInit() {
     let classFac = this.compFacRes.resolveComponentFactory(ClassShapeComponent);
@@ -78,7 +82,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
       this.elements.splice(idx, 1);
       elem.destroy();
-    })
+    });
 
     this.aggregateService.memberAdded.subscribe(data => {
 
@@ -93,7 +97,6 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
       let elem = this.getElementById(data.aggName);
       elem.updateViewBox();
-      // this.updateAggregatePolyPoints(agg);
     });
 
     this.aggregateService.memberRemoved.subscribe(data => {
@@ -102,8 +105,43 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
       let elem = this.getElementById(data.aggName);
       elem.updateViewBox();
-      // this.updateAggregatePolyPoints(agg);
-    })
+    });
+
+    ///////////////////////////////
+    this.bcService.contextAdded.subscribe(bc => {
+      this.createBoundedContext(bc);
+    });
+
+    this.bcService.contextRemoved.subscribe(agg => {
+      let idx = this.elements.findIndex(elem => elem.instance.id === agg.name);
+      let elem = this.elements[idx];
+
+      this.elements.splice(idx, 1);
+      elem.destroy();
+    });
+
+    this.bcService.memberAdded.subscribe(data => {
+
+      // remove from other aggregates first
+      let oldBc = this.bcService.contexts.forEach(bc => {
+        bc.removeMember(data.element);
+      });
+
+      // add to new aggregate
+      let bc = this.bcService.contexts.find(element => element.name === data.bcName);
+      bc.addMember(data.element);
+
+      let elem = this.getElementById(data.bcName);
+      elem.updateViewBox();
+    });
+
+    this.bcService.memberRemoved.subscribe(data => {
+      let bc = this.bcService.contexts.find(element => element.name === data.bcName);
+      bc.removeMember(data.element);
+
+      let elem = this.getElementById(data.bcName);
+      elem.updateViewBox();
+    });
   }
 
   ngAfterViewInit() {
@@ -209,6 +247,20 @@ export class EditorComponent implements OnInit, AfterViewInit {
     this.elements.push(compRef);
   }
 
+  private createBoundedContext(bc: BoundedContext) {
+    let cmpFac = this.compFacRes.resolveComponentFactory(BoundedContextComponent);
+    let classViewConRef = this.shapeHost.viewContainerRef;
+
+    let compRef = classViewConRef.createComponent(cmpFac, 0);
+
+    compRef.instance.setId(bc.name);
+    compRef.instance.bc = bc;
+    bc.view = compRef.instance;
+    compRef.instance.updateViewBox();
+
+    this.elements.push(compRef);
+  }
+
   @HostListener('document:keydown', ['$event']) deleteElement(event: KeyboardEvent) {
     switch(event.keyCode) {
       case 46: // Delete Key
@@ -221,8 +273,10 @@ export class EditorComponent implements OnInit, AfterViewInit {
     let selectedElements = this.elements.filter(elem => elem.instance.isSelected);
     selectedElements.forEach(element => {
       let idx = this.elements.indexOf(element);
-      this.elements.splice(idx, 1);
-      element.destroy();
+      if(element.instance.isDeletable) {
+        this.elements.splice(idx, 1);
+        element.destroy();
+      }
     });
   }
 

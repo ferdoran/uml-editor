@@ -16,32 +16,7 @@ export class AggregatesComponent implements OnInit {
   constructor(private aggregateService: AggregateService) { }
 
   ngOnInit() {
-
     this.aggregateService.aggregates = this.aggregates;
-
-    // this.aggregateService.memberAdded.subscribe(data => {
-
-    //   // remove from other aggregates first
-    //   let oldAgg = this.aggregates.forEach(agg => {
-    //     agg.removeMember(data.element);
-    //   });
-
-    //   // add to new aggregate
-    //   let agg = this.aggregates.find(element => element.name === data.aggName);
-    //   agg.addMember(data.element, data.isRoot);
-    // });
-
-    // this.aggregateService.memberRemoved.subscribe(data => {
-    //   let agg = this.aggregates.find(element => element.name === data.aggName);
-    //   agg.removeMember(data.element);
-    // });
-
-    // let a1 = new Aggregate("First Agg");
-    // a1.color = "green";
-    // let a2 = new Aggregate("Second Agg");
-    // a2.color = "blue";
-
-    // this.aggregates.push(a1, a2);
   }
 
   addAggregate() {

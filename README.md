@@ -20,8 +20,9 @@ If you want to check out the WebSocket server implementation just check out the 
 * Drawing sticky lines between anchor points of Class Shapes (not resizable & movable properly yet)
 * Import/Export of model as JSON (NOT in GUI yet)
 * Definition of Aggregates
-* Adding Elements to Aggregates (Classes, Entities, Value Objects);
-* Automatic creation of a background for aggregates
+* Adding Elements to Aggregates (Classes, Entities, Value Objects)
+* Adding Elements to Bounded Contexts (Classes, Entities, Value Objects). There is currently a problem with elements being in multiple Bounded Contexts not being displayed properly.
+* Automatic creation of a background for Aggregates and Bounded Contexts
 
 ## Development server
 
