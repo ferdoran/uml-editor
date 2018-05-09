@@ -159,10 +159,10 @@ export class EditorComponent implements OnInit, AfterViewInit {
     this.socketService.emit('joinRoom', 'UML');+
     this.socketService.emit('message', {room: 'UML', message: 'Hi everybody!'});
     // this.socketService.emit('leaveRoom', 'UML');
-    setTimeout(() => {
-      // let json = this.serializeElements();
-      this.importFromJson(EditorComponent.JSON_DOC);
-    }, 2000)
+    // setTimeout(() => {
+    //   // let json = this.serializeElements();
+    //   this.importFromJson(EditorComponent.JSON_DOC);
+    // }, 2000)
   }
 
   private drawPath(from: AnchorPointComponent, to: AnchorPointComponent) {

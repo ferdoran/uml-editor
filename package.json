@@ -26,6 +26,7 @@
     "concaveman": "^1.1.1",
     "core-js": "^2.4.1",
     "ng-socket-io": "^0.2.4",
+    "npm": "^6.0.0",
     "rxjs": "^5.5.2",
     "serializer.ts": "0.0.12",
     "uuid": "^3.2.1",
