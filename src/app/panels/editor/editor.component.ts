@@ -7,7 +7,6 @@ import { DrawConnectionService } from '../../services/draw-connection.service';
 import { ShapeConnectionComponent } from '../../shapes/shape-connection/shape-connection.component';
 import { DomUtils } from '../../utils/DomUtils';
 import { AnchorPointComponent } from '../../shapes/anchor-point/anchor-point.component';
-import { Constants } from '../../constants';
 import { SocketService } from '../../services/socket.service';
 import { EntityComponent } from '../../shapes/entity/entity.component';
 import { ValueObjectComponent } from '../../shapes/value-object/value-object.component';
@@ -17,6 +16,7 @@ import { AggregateComponent } from '../../shapes/aggregate/aggregate.component';
 import { BoundedContextService } from '../../services/bounded-context.service';
 import { BoundedContext } from '../../bounded-context';
 import { BoundedContextComponent } from '../../shapes/bounded-context/bounded-context.component';
+import { environment } from '../../../environments/environment'
 
 @Component({
   selector: 'app-editor',
@@ -30,7 +30,6 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
   elements: ComponentRef<ShapeWrapperComponent>[] = [];
 
-  public static readonly GRIDSIZE = 10;
   public static readonly JSON_DOC = "{\"uml-model\": [{\"id\":\"b5e1ac70-d699-4201-8b2a-13472a60d47d\",\"type\":\"Class\",\"stereotype\":\"<<class>>\",\"name\":\"Class123\",\"attributes\":[],\"methods\":[],\"position\":{\"x\":80,\"y\":70},\"dimensions\":{\"width\":200,\"height\":100},\"innerDimensions\":{\"attrRectHeight\":0,\"methRectHeight\":0,\"nameRectHeight\":100},\"style\":{\"fontSize\":10}},{\"id\":\"73604a65-552a-443d-b52e-5535e458797a\",\"type\":\"Class\",\"stereotype\":\"<<class>>\",\"name\":\"COerson\",\"attributes\":[],\"methods\":[],\"position\":{\"x\":560,\"y\":130},\"dimensions\":{\"width\":200,\"height\":100},\"innerDimensions\":{\"attrRectHeight\":0,\"methRectHeight\":0,\"nameRectHeight\":100},\"style\":{\"fontSize\":10}},{\"id\":\"310c567a-4aee-4156-bf86-3d36879bfb71\",\"type\":\"Connection\",\"position\":{\"x\":0,\"y\":0},\"from\":{\"element\":\"b5e1ac70-d699-4201-8b2a-13472a60d47d\",\"anchorPoint\":{\"x\":280,\"y\":95}},\"to\":{\"element\":\"73604a65-552a-443d-b52e-5535e458797a\",\"anchorPoint\":{\"x\":560,\"y\":155}},\"dimensions\":{}}]}";
 
   constructor(private compFacRes: ComponentFactoryResolver,
@@ -144,9 +143,8 @@ export class EditorComponent implements OnInit, AfterViewInit {
     let w = +compStyle.width.replace("px", "");
     let h = +compStyle.height.replace("px", "");
 
-
-    w = w - w % Constants.GRIDSIZE;
-    h = h - h % Constants.GRIDSIZE;
+    w = w - w % environment.gridSize;
+    h = h - h % environment.gridSize;
     this._renderer.setStyle(this.panel.nativeElement, "width", w);
     this._renderer.setStyle(this.panel.nativeElement, "height", h);
 
@@ -178,10 +176,10 @@ export class EditorComponent implements OnInit, AfterViewInit {
     compRef.instance.name = "Class";
 
     let x = position.x - (compRef.instance.width / 2);
-    x = x - x % Constants.GRIDSIZE;
+    x = x - x % environment.gridSize;
 
     let y = position.y - (compRef.instance.height / 2);
-    y = y - y % Constants.GRIDSIZE;
+    y = y - y % environment.gridSize;
 
     compRef.instance.x = x;
     compRef.instance.y = y;
@@ -197,10 +195,10 @@ export class EditorComponent implements OnInit, AfterViewInit {
     compRef.instance.name = "Class";
 
     let x = position.x - (compRef.instance.width / 2);
-    x = x - x % Constants.GRIDSIZE;
+    x = x - x % environment.gridSize;
 
     let y = position.y - (compRef.instance.height / 2);
-    y = y - y % Constants.GRIDSIZE;
+    y = y - y % environment.gridSize;
 
     compRef.instance.x = x;
     compRef.instance.y = y;
@@ -217,10 +215,10 @@ export class EditorComponent implements OnInit, AfterViewInit {
     compRef.instance.name = "Class";
 
     let x = position.x - (compRef.instance.width / 2);
-    x = x - x % Constants.GRIDSIZE;
+    x = x - x % environment.gridSize;
 
     let y = position.y - (compRef.instance.height / 2);
-    y = y - y % Constants.GRIDSIZE;
+    y = y - y % environment.gridSize;
 
     compRef.instance.x = x;
     compRef.instance.y = y;

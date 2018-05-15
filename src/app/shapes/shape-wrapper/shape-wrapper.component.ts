@@ -3,7 +3,7 @@ import { ShapeSelectorService } from '../../services/shape-selector.service';
 import { v4 as uuid } from 'uuid';
 import { DomUtils } from '../../utils/DomUtils';
 import { DrawConnectionService } from '../../services/draw-connection.service';
-import { Constants } from '../../constants';
+import { environment } from '../../../environments/environment';
 
 @Component({
     selector: '[shape-wrapper]',
@@ -101,8 +101,8 @@ export class ShapeWrapperComponent {
     if (this.isMovable && this.isMouseDown && this.isDragging) {
       let x = event.offsetX - (this.width / 2);   // FIXME: different behaviour for ShapeConnectionComponent required because width and height are different
       let y = event.offsetY - (this.height / 2);  // FIXME: different behaviour for ShapeConnectionComponent required because width and height are different
-      x = x + Constants.GRIDSIZE - x % Constants.GRIDSIZE;
-      y = y + Constants.GRIDSIZE - y % Constants.GRIDSIZE;
+      x = x + environment.gridSize - x % environment.gridSize;
+      y = y + environment.gridSize - y % environment.gridSize;
       this.setX(x);
       this.setY(y);
     }
@@ -207,7 +207,7 @@ export class ShapeWrapperComponent {
       let w: number = 0;
       let x: number = this.x;
       this.movementX += event.movementX;
-      if(this.movementX >= Constants.GRIDSIZE || this.movementX <= -Constants.GRIDSIZE) {
+      if(this.movementX >= environment.gridSize || this.movementX <= -environment.gridSize) {
         if (isNegative) {
           w = this.width - this.movementX;
           x = x + this.movementX;
@@ -229,7 +229,7 @@ export class ShapeWrapperComponent {
       let h: number = 0;
       let y: number = this.y;
       this.movementY += event.movementY;
-      if(this.movementY >= Constants.GRIDSIZE || this.movementY <= -Constants.GRIDSIZE) {
+      if(this.movementY >= environment.gridSize || this.movementY <= -environment.gridSize) {
         if (isNegative) {
           h = this.height - this.movementY;
           y = y + this.movementY;
