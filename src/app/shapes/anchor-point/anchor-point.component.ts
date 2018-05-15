@@ -24,24 +24,14 @@ export class AnchorPointComponent implements OnInit {
   @ViewChild('background') backgroundCircle: ElementRef;
   @ViewChild('anchorPoint') anchorPoint: ElementRef;
 
+  @ViewChild('wrapper') wrapper: ElementRef;
+
   private isHovering: boolean = false;
   private static isDrawing: boolean = false;
 
   constructor(private elementRef: ElementRef, private renderer: Renderer2, private drawConnectionService: DrawConnectionService) {  }
 
   ngOnInit() {
-  }
-
-  toggleBackground(event: MouseEvent) {
-    if(this.isHovering) {
-      this.isHovering = false;
-      this.renderer.setStyle(this.backgroundCircle.nativeElement, "visibility", "hidden");
-    }
-    else {
-      this.isHovering = true;
-      this.renderer.setStyle(this.backgroundCircle.nativeElement, "visibility", "visible");
-    }
-
   }
 
   public getRealX() {
@@ -52,7 +42,6 @@ export class AnchorPointComponent implements OnInit {
     return this.parent.y + this.cy;
   }
 
-  @HostListener('mousedown', ['$event'])
   startDrawingConnection(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
@@ -60,13 +49,25 @@ export class AnchorPointComponent implements OnInit {
     this.drawConnectionService.startDrawing(this);
   }
 
-  @HostListener('mouseup', ['$event'])
   finishDrawingConnection(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
     if(AnchorPointComponent.isDrawing) {
       AnchorPointComponent.isDrawing = false;
       this.drawConnectionService.finishDrawing(this)
+    }
+  }
+
+  toggleBackground(event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    if(this.isHovering) {
+      this.isHovering = false;
+      this.renderer.removeClass(this.backgroundCircle.nativeElement, "focused");
+    }
+    else {
+      this.isHovering = true;
+      this.renderer.addClass(this.backgroundCircle.nativeElement, "focused");
     }
   }
 }

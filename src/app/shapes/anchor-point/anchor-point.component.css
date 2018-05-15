@@ -1,9 +1,12 @@
 .anchor-point-bg {
-    visibility: hidden;
-    fill: rgba(128, 232, 128, 0.761);
+    fill: rgba(0,0,0,0);
 }
 
 .anchor-point {
     cursor: default;
     fill: blue;
+}
+
+.anchor-point-bg.focused {
+    fill: rgba(128, 232, 128, 0.761);
 }
