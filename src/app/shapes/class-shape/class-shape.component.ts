@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, Renderer2, AfterViewInit, ViewContainerRef, ViewChild, HostListener, ViewChildren, QueryList, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ElementRef, Renderer2, AfterViewInit, ViewContainerRef, ViewChild, HostListener, ViewChildren, QueryList, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ShapeWrapperComponent } from '../shape-wrapper/shape-wrapper.component';
 import { Subscription } from 'rxjs/Subscription';
 import { element } from 'protractor';
@@ -14,7 +14,7 @@ import { BoundedContextService } from '../../services/bounded-context.service';
   styleUrls: ['./class-shape.component.css'],
   providers: [AnchorPointComponent]
 })
-export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit, AfterViewInit {
+export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
   stereotype: string = "<<class>>";
   name: string = "Class";
   nameRectHeight: number = 10;
@@ -63,6 +63,21 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
     this.resizeShape = this.resizeGroup;
     this.updateViewBox();
     this.hasInitializedView = true;
+  }
+
+  ngOnDestroy() {
+    let agg = this.aggregateService.getAggregateForClass(this);
+    if (agg) {
+      agg.removeMember(this);
+      agg.updateView();
+    }
+    let bcs = this.bcService.getBoundedContextsForClass(this);
+    if (bcs && bcs.length > 0) {
+      bcs.forEach(bc => {
+        bc.removeMember(this);
+        bc.updateView();
+      });
+    }
   }
 
   updateHeights() {
