@@ -27,6 +27,7 @@ import { AggregateComponent } from './shapes/aggregate/aggregate.component';
 import { BoundedContextsComponent } from './panels/bounded-contexts/bounded-contexts.component';
 import { BoundedContextService } from './services/bounded-context.service';
 import { BoundedContextComponent } from './shapes/bounded-context/bounded-context.component';
+import { DeletionService } from './services/deletion.service';
 
 const config: SocketIoConfig = { url: 'http://localhost:3020', options: {} };
 
@@ -65,7 +66,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3020', options: {} };
     AggregateComponent,
     BoundedContextComponent
   ],
-  providers: [ShapeSelectorService, ShapeDropService, DrawConnectionService, SocketService, AggregateService, BoundedContextService],
+  providers: [ShapeSelectorService, ShapeDropService, DrawConnectionService, SocketService, AggregateService, BoundedContextService, DeletionService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

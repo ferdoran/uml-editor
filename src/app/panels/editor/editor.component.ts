@@ -17,6 +17,7 @@ import { BoundedContextService } from '../../services/bounded-context.service';
 import { BoundedContext } from '../../bounded-context';
 import { BoundedContextComponent } from '../../shapes/bounded-context/bounded-context.component';
 import { environment } from '../../../environments/environment'
+import { DeletionService } from '../../services/deletion.service';
 
 @Component({
   selector: 'app-editor',
@@ -39,7 +40,8 @@ export class EditorComponent implements OnInit, AfterViewInit {
     private _drawConnectionService: DrawConnectionService,
     private socketService: SocketService,
     private aggregateService: AggregateService,
-    private bcService: BoundedContextService) { }
+    private bcService: BoundedContextService,
+    private deletionService: DeletionService) { }
 
   ngOnInit() {
     let classFac = this.compFacRes.resolveComponentFactory(ClassShapeComponent);
@@ -136,6 +138,10 @@ export class EditorComponent implements OnInit, AfterViewInit {
       let elem = this.getElementById(data.bcName);
       elem.updateViewBox();
     });
+
+    this.deletionService.elementDeleted.subscribe(element => {
+      this.destroyElement(element);
+    })
   }
 
   ngAfterViewInit() {
@@ -149,8 +155,8 @@ export class EditorComponent implements OnInit, AfterViewInit {
     this._renderer.setStyle(this.panel.nativeElement, "height", h);
 
     // Join Room
-    this.socketService.emit('joinRoom', 'UML');+
-    this.socketService.emit('message', {room: 'UML', message: 'Hi everybody!'});
+    // this.socketService.emit('joinRoom', 'UML');
+    // this.socketService.emit('message', {room: 'UML', message: 'Hi everybody!'});
     // this.socketService.emit('leaveRoom', 'UML');
     // setTimeout(() => {
     //   // let json = this.serializeElements();
@@ -254,7 +260,16 @@ export class EditorComponent implements OnInit, AfterViewInit {
     this.elements.push(compRef);
   }
 
-  @HostListener('document:keydown', ['$event']) deleteElement(event: KeyboardEvent) {
+  private destroyElement(element: ShapeWrapperComponent) {
+    let idx = this.elements.findIndex(el => el.instance === element);
+    if(idx >= 0) {
+      let cmpRef = this.elements[idx];
+      this.elements.splice(idx, 1);
+      cmpRef.destroy();
+    }
+  }
+
+  @HostListener('document:keydown', ['$event']) onDeleteKey(event: KeyboardEvent) {
     switch(event.keyCode) {
       case 46: // Delete Key
         this.deleteSelectedElements();
@@ -267,8 +282,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
     selectedElements.forEach(element => {
       let idx = this.elements.indexOf(element);
       if(element.instance.isDeletable) {
-        this.elements.splice(idx, 1);
-        element.destroy();
+        this.deletionService.elementDeleted.next(element.instance)
       }
     });
   }

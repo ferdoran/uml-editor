@@ -7,6 +7,7 @@ import { DrawConnectionService } from '../../services/draw-connection.service';
 import { AnchorPointComponent } from '../anchor-point/anchor-point.component';
 import { AggregateService } from '../../services/aggregate.service';
 import { BoundedContextService } from '../../services/bounded-context.service';
+import { DeletionService } from '../../services/deletion.service';
 
 @Component({
   selector: 'svg.class-shape ',
@@ -41,7 +42,8 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
     protected shapeSelectorService: ShapeSelectorService,
     protected drawConnectionService: DrawConnectionService,
     protected aggregateService: AggregateService,
-    protected bcService: BoundedContextService)
+    protected bcService: BoundedContextService,
+    protected deletionService: DeletionService)
   {
     super(elementRef, renderer, shapeSelectorService, drawConnectionService);
     this.width = 200;
@@ -78,6 +80,7 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
         bc.updateView();
       });
     }
+    this.deletionService.classDeleted.next(this);
   }
 
   updateHeights() {

@@ -1,8 +1,9 @@
-import { Component, OnInit, Renderer2, ElementRef, DoCheck, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Renderer2, ElementRef, DoCheck, AfterViewInit, ComponentRef } from '@angular/core';
 import { ShapeWrapperComponent } from '../shape-wrapper/shape-wrapper.component';
 import { ShapeSelectorService } from '../../services/shape-selector.service';
 import { DrawConnectionService } from '../../services/draw-connection.service';
 import { AnchorPointComponent } from '../anchor-point/anchor-point.component';
+import { DeletionService } from '../../services/deletion.service';
 
 @Component({
   selector: 'svg.shape-connection',
@@ -11,9 +12,14 @@ import { AnchorPointComponent } from '../anchor-point/anchor-point.component';
 })
 export class ShapeConnectionComponent extends ShapeWrapperComponent implements OnInit, DoCheck, AfterViewInit {
 
-  constructor(protected renderer: Renderer2, protected elementRef: ElementRef, protected shapeSelectorService: ShapeSelectorService, protected drawConnectionService: DrawConnectionService) {
-    super(elementRef, renderer, shapeSelectorService, drawConnectionService);
-   }
+  constructor(protected renderer: Renderer2,
+    protected elementRef: ElementRef,
+    protected shapeSelectorService: ShapeSelectorService,
+    protected drawConnectionService: DrawConnectionService,
+    private deletionService: DeletionService)
+    {
+      super(elementRef, renderer, shapeSelectorService, drawConnectionService);
+    }
 
   element1: ShapeWrapperComponent;
   element2: ShapeWrapperComponent;
@@ -28,6 +34,11 @@ export class ShapeConnectionComponent extends ShapeWrapperComponent implements O
   ngOnInit() {
     this.type = "Connection";
     this.isMovable = false;
+    this.deletionService.classDeleted.subscribe(element => {
+      if(this.element1 === element || this.element2 === element) {
+        this.deletionService.elementDeleted.next(this);
+      }
+    })
   }
 
   ngAfterViewInit() {
