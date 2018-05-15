@@ -78,12 +78,15 @@ export class ShapeWrapperComponent {
     this.isMouseDown = true;
     console.debug("Mouse has been downed on me!", this.isSelected);
     if(this.isMouseDown && !this.isResizing)
-      this.isDragging = true;
-    // this.dragTimer = setTimeout(() => {
-    //   if (this.isMouseDown) {
-    //     this.isDragging = true;
-    //   }
-    // }, this.DRAG_TIMEOUT);
+      // this.isDragging = true;
+    this.dragTimer = setTimeout(() => {
+      if (this.isMouseDown) {
+        this.isDragging = true;
+        if(this.resizeShape) {
+          this.renderer.addClass(this.resizeShape.nativeElement, "d-none");
+        }
+      }
+    }, this.DRAG_TIMEOUT);
   }
 
   @HostListener('document:mouseup', ['$event']) onMouseUp(event: MouseEvent) {
@@ -93,6 +96,9 @@ export class ShapeWrapperComponent {
     this.isResizing = false;
     this.resizeDirection = "";
     clearTimeout(this.dragTimer);
+    if(this.resizeShape) {
+      this.renderer.removeClass(this.resizeShape.nativeElement, "d-none");
+    }
     console.debug("Mouse has been released");
   }
 
