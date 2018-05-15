@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Aggregate } from '../../aggregate';
 import { AggregateService } from '../../services/aggregate.service';
+import { ColorService } from '../../services/color.service';
 
 @Component({
   selector: 'app-aggregates',
@@ -8,12 +9,9 @@ import { AggregateService } from '../../services/aggregate.service';
   styleUrls: ['./aggregates.component.css']
 })
 export class AggregatesComponent implements OnInit {
-
-  static colors: string[] = ['green', 'blue', 'red', 'orange', 'pink'];
-  static nextColor: number = 0;
   aggregates: Aggregate[] = [];
   newAggregateName: string = "";
-  constructor(private aggregateService: AggregateService) { }
+  constructor(private aggregateService: AggregateService, private colorService: ColorService) { }
 
   ngOnInit() {
     this.aggregateService.aggregates = this.aggregates;
@@ -22,7 +20,7 @@ export class AggregatesComponent implements OnInit {
   addAggregate() {
     if (this.newAggregateName.length > 0 && this.aggregates.findIndex(agg => agg.name === this.newAggregateName) === -1) {
       let agg = new Aggregate(this.newAggregateName);
-      agg.color = AggregatesComponent.colors[AggregatesComponent.nextColor++ % AggregatesComponent.colors.length];
+      agg.color = this.colorService.nextColor();
       this.aggregates.push(agg);
       this.newAggregateName = "";
       this.aggregateService.aggregateAdded.next(agg);

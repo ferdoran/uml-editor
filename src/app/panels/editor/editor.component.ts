@@ -18,6 +18,7 @@ import { BoundedContext } from '../../bounded-context';
 import { BoundedContextComponent } from '../../shapes/bounded-context/bounded-context.component';
 import { environment } from '../../../environments/environment'
 import { DeletionService } from '../../services/deletion.service';
+import { ColorService } from '../../services/color.service';
 
 @Component({
   selector: 'app-editor',
@@ -41,7 +42,8 @@ export class EditorComponent implements OnInit, AfterViewInit {
     private socketService: SocketService,
     private aggregateService: AggregateService,
     private bcService: BoundedContextService,
-    private deletionService: DeletionService) { }
+    private deletionService: DeletionService,
+    private colorService: ColorService) { }
 
   ngOnInit() {
     let classFac = this.compFacRes.resolveComponentFactory(ClassShapeComponent);

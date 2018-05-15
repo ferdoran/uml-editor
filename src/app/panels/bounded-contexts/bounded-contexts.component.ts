@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BoundedContext } from '../../bounded-context';
 import { BoundedContextService } from '../../services/bounded-context.service';
+import { ColorService } from '../../services/color.service';
 
 @Component({
   selector: 'app-bounded-contexts',
@@ -8,33 +9,30 @@ import { BoundedContextService } from '../../services/bounded-context.service';
   styleUrls: ['./bounded-contexts.component.css']
 })
 export class BoundedContextsComponent implements OnInit {
-
-  static colors: string[] = ['green', 'blue', 'red', 'orange', 'pink'];
-  static nextColor: number = 0;
   contexts: BoundedContext[] = [];
   newContextName: string = "";
-  constructor(private bcService: BoundedContextService) { }
+  constructor(private bcService: BoundedContextService, private colorService: ColorService) { }
 
   ngOnInit() {
     this.bcService.contexts = this.contexts;
   }
 
   addBoundedContext() {
-    if (this.newContextName.length > 0 && this.contexts.findIndex(agg => agg.name === this.newContextName) === -1) {
-      let agg = new BoundedContext(this.newContextName);
-      agg.color = BoundedContextsComponent.colors[BoundedContextsComponent.nextColor++ % BoundedContextsComponent.colors.length];
-      this.contexts.push(agg);
+    if (this.newContextName.length > 0 && this.contexts.findIndex(bc => bc.name === this.newContextName) === -1) {
+      let bc = new BoundedContext(this.newContextName);
+      bc.color = this.colorService.nextColor();
+      this.contexts.push(bc);
       this.newContextName = "";
-      this.bcService.contextAdded.next(agg);
+      this.bcService.contextAdded.next(bc);
     }
   }
 
-  removeBoundedContext(aggName: string) {
-    let idx = this.contexts.findIndex(agg => agg.name === aggName);
-    let agg = this.contexts[idx];
-    agg.members.splice(0, agg.members.length);
+  removeBoundedContext(bcName: string) {
+    let idx = this.contexts.findIndex(bc => bc.name === bcName);
+    let bc = this.contexts[idx];
+    bc.members.splice(0, bc.members.length);
     this.contexts.splice(idx, 1);
-    this.bcService.contextRemoved.next(agg);
+    this.bcService.contextRemoved.next(bc);
   }
 
 }
