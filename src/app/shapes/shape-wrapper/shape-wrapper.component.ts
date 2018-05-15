@@ -20,7 +20,7 @@ export class ShapeWrapperComponent {
   protected isMouseDown: boolean = false;
   protected isDragging: boolean = false;
   public isSelected: boolean = false;
-  private readonly DRAG_TIMEOUT: number = 50;
+  private readonly DRAG_TIMEOUT: number = 100;
   private dragTimer: NodeJS.Timer;
   public id: string;
   protected resizeShape: ElementRef;
@@ -92,13 +92,13 @@ export class ShapeWrapperComponent {
   @HostListener('document:mouseup', ['$event']) onMouseUp(event: MouseEvent) {
     // event.preventDefault();
     this.isMouseDown = false;
+    if(this.isDragging && this.resizeShape) {
+      this.renderer.removeClass(this.resizeShape.nativeElement, "d-none");
+    }
     this.isDragging = false;
     this.isResizing = false;
     this.resizeDirection = "";
     clearTimeout(this.dragTimer);
-    if(this.resizeShape) {
-      this.renderer.removeClass(this.resizeShape.nativeElement, "d-none");
-    }
     console.debug("Mouse has been released");
   }
 
