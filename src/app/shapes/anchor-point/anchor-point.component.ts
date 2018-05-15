@@ -57,17 +57,4 @@ export class AnchorPointComponent implements OnInit {
       this.drawConnectionService.finishDrawing(this)
     }
   }
-
-  toggleBackground(event: MouseEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-    if(this.isHovering) {
-      this.isHovering = false;
-      this.renderer.removeClass(this.backgroundCircle.nativeElement, "focused");
-    }
-    else {
-      this.isHovering = true;
-      this.renderer.addClass(this.backgroundCircle.nativeElement, "focused");
-    }
-  }
 }

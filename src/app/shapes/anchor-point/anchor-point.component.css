@@ -1,12 +1,12 @@
-.anchor-point-bg {
-    fill: rgba(0,0,0,0);
-}
-
 .anchor-point {
     cursor: default;
     fill: blue;
 }
 
-.anchor-point-bg.focused {
+.anchor-point-wrapper > .anchor-point-bg {
+    fill: rgba(0,0,0,0);
+}
+
+.anchor-point-wrapper:hover > .anchor-point-bg {
     fill: rgba(128, 232, 128, 0.761);
 }

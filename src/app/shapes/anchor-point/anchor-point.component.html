@@ -1,4 +1,4 @@
-<svg:g #wrapper (mouseenter)="toggleBackground($event)" (mouseleave)="toggleBackground($event)" (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
+<svg:g class="anchor-point-wrapper" #wrapper (mousedown)="startDrawingConnection($event)" (mouseup)="finishDrawingConnection($event)">
 	<svg:circle class="anchor-point-bg" [attr.cx]="cx" [attr.cy]="cy" [attr.r]="r+7" #background></svg:circle>
 	<svg:circle class="anchor-point" [attr.cx]="cx" [attr.cy]="cy" [attr.r]="r" #anchorPoint ></svg:circle>
 </svg:g>
