@@ -34,11 +34,6 @@ ul {
     padding-left: 0;
 }
 
-ul > li {
-    width: 80%;
-    margin: 0 auto;
-}
-
 .material-icons {
     font-size: 16px;
 }
@@ -50,3 +45,23 @@ ul > li {
 /* input.form-control {
     padding: 0;
 } */
+.bc-list-item {
+    display: block;
+    margin: 0.25rem auto;
+}
+
+.bc-list-item > span {
+    display: inline-block;
+    height: 100%;
+    padding: 0;
+}
+
+.bc-list-item > button {
+    height: 100%;
+    float: right;
+    padding: 0 0.25rem;
+}
+
+button > i {
+    vertical-align: -1px!important;
+}

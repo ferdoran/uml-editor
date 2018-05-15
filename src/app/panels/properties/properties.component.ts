@@ -78,15 +78,12 @@ export class PropertiesComponent implements OnInit {
     }
   }
 
-  selectedBoundedContext(value) {
-    if (value === "0") {
-      let bc = this.bcService.getBoundedContextForClass(this.selectedElement as ClassShapeComponent);
-      if (bc !== null)
-        this.bcService.removeBoundedContextMember(bc.name, this.selectedElement as ClassShapeComponent);
-    }
-    else {
-      this.bcService.addBoundedContextMember(value, this.selectedElement as ClassShapeComponent);
-    }
+  addBoundedContext(bcName) {
+    this.bcService.addBoundedContextMember(bcName, this.selectedElement as ClassShapeComponent);
+  }
+
+  removeBoundedContext(bcName) {
+    this.bcService.removeBoundedContextMember(bcName, this.selectedElement as ClassShapeComponent);
   }
 
   triggerAggregateRoot(event) {

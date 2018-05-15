@@ -137,9 +137,9 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
     if(agg) {
       agg.updateView();
     }
-    let bc = this.bcService.getBoundedContextForClass(this);
-    if(bc) {
-      bc.updateView();
+    let bcs = this.bcService.getBoundedContextsForClass(this);
+    if(bcs && bcs.length > 0) {
+      bcs.forEach(bc => bc.updateView());
     }
   }
 

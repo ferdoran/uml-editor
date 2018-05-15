@@ -12,7 +12,7 @@
   <h3 class="text-center">Attributes</h3>
   <ul>
     <li *ngFor="let attr of selectedElement['attributes']; let i = index; trackBy:trackFunction">
-      <div class="input-group input-group-sm mb-1">
+      <div class="input-group input-group-sm mb-1 w-80 mx-auto">
         <input class="form-control rounded-0" [(ngModel)]="selectedElement['attributes'][i]" minlength="1" />
         <div class="input-group-append">
           <button class="btn btn-secondary rounded-0" ngbTooltip="Remove" (click)="removeAttribute(i)">
@@ -22,7 +22,7 @@
       </div>
     </li>
     <li>
-      <div class="input-group input-group-sm mb-1">
+      <div class="input-group input-group-sm mb-1 w-80 mx-auto">
         <input class="form-control rounded-0 add-input" minlength="1" [(ngModel)]="newAttrValue" />
         <div class="input-group-append">
           <button class="btn btn-secondary rounded-0 add-element" ngbTooltip="Add Attribute" (click)="addAttribute()">
@@ -36,7 +36,7 @@
   <h3 class="text-center">Methods</h3>
   <ul>
     <li *ngFor="let meth of selectedElement['methods']; let i = index; trackBy:trackFunction">
-      <div class="input-group input-group-sm mb-1">
+      <div class="input-group input-group-sm mb-1 w-80 mx-auto">
         <input class="form-control rounded-0" [(ngModel)]="selectedElement['methods'][i]" minlength="1" />
         <div class="input-group-append">
           <button class="btn btn-secondary rounded-0" ngbTooltip="Remove" (click)="removeMethod(i)">
@@ -46,7 +46,7 @@
       </div>
     </li>
     <li>
-      <div class="input-group input-group-sm mb-1">
+      <div class="input-group input-group-sm mb-1 w-80 mx-auto">
         <input class="form-control rounded-0 add-input" minlength="1" [(ngModel)]="newMethValue" />
         <div class="input-group-append">
           <button class="btn btn-secondary rounded-0 add-element" ngbTooltip="Add Method" (click)="addMethod()">
@@ -87,25 +87,23 @@
 
   <h3 class="text-center">Bounded Contexts</h3>
   <div class="w-80 mx-auto input-group mb-3">
-    <div class="input-group-prepend">
-      <label for="bcSelect" class="input-group-text">Bounded Contexts</label>
-    </div>
-    <select class="custom-select" id="bcSelect" (change)="selectedBoundedContext($event.target.value)" multiple>
-      <option value="0">None</option>
-      <ng-container *ngFor="let bc of bcService.contexts">
-        <option selected *ngIf="bcService.getBoundedContextForClass(selectedElement) !== null && bcService.getBoundedContextForClass(selectedElement).name === bc.name"
-          [value]="bc.name">
-          {{ bc.name }}
-        </option>
-        <option [value]="bc.name" *ngIf="bcService.getBoundedContextForClass(selectedElement) !== null && bcService.getBoundedContextForClass(selectedElement).name
-            !== bc.name">
-          {{ bc.name }}
-        </option>
-        <option [value]="bc.name" *ngIf="bcService.getBoundedContextForClass(selectedElement) === null">
-          {{ bc.name }}
-        </option>
-      </ng-container>
-    </select>
+    <ul class="bc-list w-100">
+      <li class="bc-list-item w-100" *ngFor="let bc of bcService.getOtherBoundedContextsForClass(selectedElement)">
+          <span> {{bc.name}} </span>
+          <button class="btn btn-secondary rounded-0 add-element" ngbTooltip="Add Element to Bounded Context" (click)="addBoundedContext(bc.name)" >
+            <i class="material-icons align-middle">add</i>
+          </button>
+      </li>
+    </ul>
+    <h6>Member of:</h6>
+    <ul class="bc-list w-100">
+      <li class="bc-list-item w-100" *ngFor="let bc of bcService.getBoundedContextsForClass(selectedElement)">
+          <span class="align-middle"> {{bc.name}} </span>
+          <button class="btn btn-secondary rounded-0 add-element" ngbTooltip="Remove Element from Bounded Context" (click)="removeBoundedContext(bc.name)">
+            <i class="material-icons align-middle">delete</i>
+          </button>
+      </li>
+    </ul>
   </div>
 </ng-container>
 </div>

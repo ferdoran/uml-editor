@@ -122,11 +122,6 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
     this.bcService.memberAdded.subscribe(data => {
 
-      // remove from other aggregates first
-      let oldBc = this.bcService.contexts.forEach(bc => {
-        bc.removeMember(data.element);
-      });
-
       // add to new aggregate
       let bc = this.bcService.contexts.find(element => element.name === data.bcName);
       bc.addMember(data.element);

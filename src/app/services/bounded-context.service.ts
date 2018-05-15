@@ -22,14 +22,21 @@ export class BoundedContextService {
     this.memberRemoved.next({ bcName: bcName, element: element });
   }
 
-  public getBoundedContextForClass(element: ClassShapeComponent): BoundedContext {
+  public getBoundedContextsForClass(element: ClassShapeComponent): BoundedContext[] {
+    let bcs: BoundedContext[] = [];
     for (let i = 0; i < this.contexts.length; i++) {
       let bc = this.contexts[i];
       if (bc.existMember(element) >= 0) {
-        return bc;
+        bcs.push(bc);
       }
     }
-    return null;
+    return bcs;
+  }
+
+  public getOtherBoundedContextsForClass(element: ClassShapeComponent): BoundedContext[] {
+    let bcs: BoundedContext[] = [];
+    bcs = this.contexts.filter(bc => bc.existMember(element) === -1);
+    return bcs;
   }
 
 }
