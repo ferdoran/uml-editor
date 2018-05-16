@@ -82,6 +82,8 @@ export class ShapeWrapperComponent {
     this.dragTimer = setTimeout(() => {
       if (this.isMouseDown) {
         this.isDragging = true;
+        this.movementX = 0;
+        this.movementY = 0;
         if(this.resizeShape) {
           this.renderer.addClass(this.resizeShape.nativeElement, "d-none");
         }
@@ -105,12 +107,24 @@ export class ShapeWrapperComponent {
   @HostListener('document:mousemove', ['$event']) onMouseMove(event: MouseEvent) {
     // event.preventDefault();
     if (this.isMovable && this.isMouseDown && this.isDragging) {
-      let x = event.offsetX - (this.width / 2);   // FIXME: different behaviour for ShapeConnectionComponent required because width and height are different
-      let y = event.offsetY - (this.height / 2);  // FIXME: different behaviour for ShapeConnectionComponent required because width and height are different
-      x = x + environment.gridSize - x % environment.gridSize;
-      y = y + environment.gridSize - y % environment.gridSize;
-      this.setX(x);
-      this.setY(y);
+
+      this.movementX += event.movementX;
+      this.movementY += event.movementY;
+
+      if(Math.abs(this.movementX) >= environment.gridSize) {
+        // move horizontal
+        let x = this.x + this.movementX;
+        this.setX(x);
+        this.movementX = 0;
+      }
+      if(Math.abs(this.movementY) >= environment.gridSize) {
+        // move vertical
+        let y = this.y + this.movementY;
+        this.setY(y);
+        this.movementY = 0;
+      }
+
+      // TODO: Extend panel size when element is moved out of it
     }
     else if(this.isResizing) {
       switch(this.resizeDirection) {
