@@ -56,4 +56,15 @@ export class DomUtils {
 
         return (event.offsetX < minX || event.offsetX > maxX || event.offsetY < minY || event.offsetY > maxY);
     }
+
+    public static isClassShapeComponent(shape: ShapeWrapperComponent): boolean {
+        switch(shape.constructor.name) {
+            case "ClassShapeComponent":
+            case "ValueObjectComponent":
+            case "EntityComponent":
+                return true;
+            default:
+                return false;
+        }
+    }
 }

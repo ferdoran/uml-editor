@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { ClassShapeComponent } from '../../shapes/class-shape/class-shape.component';
 import { AggregateService } from '../../services/aggregate.service';
 import { BoundedContextService } from '../../services/bounded-context.service';
+import { DomUtils } from '../../utils/DomUtils';
 
 @Component({
   selector: 'app-properties',
@@ -26,8 +27,14 @@ export class PropertiesComponent implements OnInit {
     this.subscription = this.shapeSelectorService.selectElement.subscribe(elementId => {
 
       let element = this.shapeSelectorService.getShape(elementId);
-      this.selectedElement = element as ClassShapeComponent;
-      this.constr = element.constructor;
+      if(DomUtils.isClassShapeComponent(element)) {
+        this.selectedElement = element as ClassShapeComponent;
+        this.constr = element.constructor;
+      }
+      else {
+        this.selectedElement = null;
+        this.constr = null;
+      }
     });
     this.shapeSelectorService.deselectElement.subscribe(elementId => {
       if(elementId === this.selectedElement.id) {

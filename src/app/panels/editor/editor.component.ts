@@ -19,6 +19,7 @@ import { BoundedContextComponent } from '../../shapes/bounded-context/bounded-co
 import { environment } from '../../../environments/environment'
 import { DeletionService } from '../../services/deletion.service';
 import { ColorService } from '../../services/color.service';
+import { ShapeSelectorService } from '../../services/shape-selector.service';
 
 @Component({
   selector: 'app-editor',
@@ -43,7 +44,8 @@ export class EditorComponent implements OnInit, AfterViewInit {
     private aggregateService: AggregateService,
     private bcService: BoundedContextService,
     private deletionService: DeletionService,
-    private colorService: ColorService) { }
+    private colorService: ColorService,
+    private shapeSelectorService: ShapeSelectorService) { }
 
   ngOnInit() {
     let classFac = this.compFacRes.resolveComponentFactory(ClassShapeComponent);
@@ -284,6 +286,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
     selectedElements.forEach(element => {
       let idx = this.elements.indexOf(element);
       if(element.instance.isDeletable) {
+        this.shapeSelectorService.deselectElement.next(element.instance.id);
         this.deletionService.elementDeleted.next(element.instance)
       }
     });
@@ -368,7 +371,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
     let element1 = this.getElementById(jsonObj.from.element);
     let element2 = this.getElementById(jsonObj.to.element);
 
-    if (element1 && element2 && (element1.constructor.name !== "ClassShapeComponent" || element2.constructor.name !== "ClassShapeComponent")) {
+    if (element1 && element2 && (!DomUtils.isClassShapeComponent(element1) || !DomUtils.isClassShapeComponent(element2))) {
       throw new Error("From or To Element is not of type ClassShape")
     }
 
