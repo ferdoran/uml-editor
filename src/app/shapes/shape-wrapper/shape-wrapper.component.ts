@@ -1,13 +1,16 @@
-import { Component, ViewChild, ElementRef, Renderer2, HostListener } from '@angular/core';
+import { Component, ViewChild, ElementRef, Renderer2, HostListener} from '@angular/core';
 import { ShapeSelectorService } from '../../services/shape-selector.service';
 import { v4 as uuid } from 'uuid';
 import { DomUtils } from '../../utils/DomUtils';
 import { DrawConnectionService } from '../../services/draw-connection.service';
 import { environment } from '../../../environments/environment';
+import { SocketService } from '../../services/socket.service';
+import { ElementCreatedMessage } from '../../network/element-created.message';
+import { ElementMovedMessage } from '../../network/element-moved.message';
+import { ElementResizedMessage } from '../../network/element-resized.message';
 
 @Component({
     selector: '[shape-wrapper]',
-    // templateUrl: './shape-wrapper.component.html',
     template: '',
     styleUrls: ['./shape-wrapper.component.css']
 })
@@ -50,7 +53,7 @@ export class ShapeWrapperComponent {
   }
 
 
-  constructor(protected elementRef: ElementRef, protected renderer: Renderer2, protected shapeSelectorService: ShapeSelectorService, protected drawConnectionService: DrawConnectionService) {
+  constructor(protected elementRef: ElementRef, protected renderer: Renderer2, protected shapeSelectorService: ShapeSelectorService, protected drawConnectionService: DrawConnectionService, protected socketService: SocketService) {
       this.id = uuid();
       this.renderer.setAttribute(this.elementRef.nativeElement, "id", this.id);
       this.shapeSelectorService.registerShape(this);
@@ -94,11 +97,24 @@ export class ShapeWrapperComponent {
   @HostListener('document:mouseup', ['$event']) onMouseUp(event: MouseEvent) {
     // event.preventDefault();
     this.isMouseDown = false;
-    if(this.isDragging && this.resizeShape) {
-      this.renderer.removeClass(this.resizeShape.nativeElement, "d-none");
+    if(this.isDragging) {
+      let movedMessage = new ElementMovedMessage();
+      movedMessage.elementId = this.id;
+      movedMessage.position = { x: this.x, y: this.y };
+      this.socketService.sendMessage(movedMessage);
+      if(this.resizeShape) {
+        this.renderer.removeClass(this.resizeShape.nativeElement, "d-none");
+      }
+      this.isDragging = false;
     }
-    this.isDragging = false;
-    this.isResizing = false;
+    if(this.isResizing) {
+      let resizedMessage = new ElementResizedMessage();
+      resizedMessage.elementId = this.id;
+      resizedMessage.position = { x: this.x, y: this.y };
+      resizedMessage.dimension = { width: this.width, height: this.height };
+      this.socketService.sendMessage(resizedMessage);
+      this.isResizing = false;
+    }
     this.resizeDirection = "";
     clearTimeout(this.dragTimer);
     console.debug("Mouse has been released");
@@ -123,7 +139,6 @@ export class ShapeWrapperComponent {
         this.setY(y);
         this.movementY = 0;
       }
-
       // TODO: Extend panel size when element is moved out of it
     }
     else if(this.isResizing) {

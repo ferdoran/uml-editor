@@ -20,6 +20,11 @@ import { environment } from '../../../environments/environment'
 import { DeletionService } from '../../services/deletion.service';
 import { ColorService } from '../../services/color.service';
 import { ShapeSelectorService } from '../../services/shape-selector.service';
+import { ElementCreatedMessage } from '../../network/element-created.message';
+import { ElementDeletedMessage } from '../../network/element-deleted.message';
+import { ElementMovedMessage } from '../../network/element-moved.message';
+import { ElementResizedMessage } from '../../network/element-resized.message';
+import { ElementAttributesChangedMessage } from '../../network/element-attributes-changed.message';
 
 @Component({
   selector: 'app-editor',
@@ -144,8 +149,47 @@ export class EditorComponent implements OnInit, AfterViewInit {
     });
 
     this.deletionService.elementDeleted.subscribe(element => {
+      let deletionMsg = new ElementDeletedMessage();
+      deletionMsg.elementId = element.id;
+      this.socketService.sendMessage(deletionMsg);
       this.destroyElement(element);
-    })
+    });
+
+    this.socketService.onEvent<ElementCreatedMessage>('ElementCreatedMessage').subscribe(data => {
+      switch(data.shape) {
+        case "ClassShapeComponent":
+          console.log("Creating Class Shape");
+          this.createClassShapeFromEvent(data);
+          break;
+        case "EntityComponent":
+          break;
+        case "ValueObjectComponent":
+          break;
+      }
+    });
+
+    this.socketService.onEvent<ElementDeletedMessage>('ElementDeletedMessage').subscribe(data => {
+      this.destroyElementById(data.elementId);
+    });
+
+    this.socketService.onEvent<ElementMovedMessage>('ElementMovedMessage').subscribe(data => {
+      let element = this.getElementById(data.elementId);
+      element.setX(data.position.x);
+      element.setY(data.position.y);
+    });
+    this.socketService.onEvent<ElementResizedMessage>('ElementResizedMessage').subscribe(data => {
+      let element = this.getElementById(data.elementId);
+      element.setX(data.position.x);
+      element.setY(data.position.y);
+      element.setWidth(data.dimension.width);
+      element.setHeight(data.dimension.height);
+    });
+    this.socketService.onEvent<ElementAttributesChangedMessage>('ElementAttributesChangedMessage').subscribe(data => {
+      console.log('Received ElementAttributesChangedMessage: ', data);
+      let element = this.getElementById(data.elementId) as ClassShapeComponent;
+      element.attributes = data.attributes;
+      element.updateHeights();
+    });
   }
 
   ngAfterViewInit() {
@@ -233,6 +277,29 @@ export class EditorComponent implements OnInit, AfterViewInit {
     compRef.instance.x = x;
     compRef.instance.y = y;
 
+    let msg = new ElementCreatedMessage();
+    msg.shape = compRef.instance.constructor.name;
+    msg.elementId = compRef.instance.id;
+    msg.position = { x: compRef.instance.x, y: compRef.instance.y };
+    msg.dimension = { width: compRef.instance.width, height: compRef.instance.height };
+
+    this.elements.push(compRef);
+    this.socketService.sendMessage(msg);
+  }
+
+  private createClassShapeFromEvent(data: ElementCreatedMessage) {
+    let cmpFac = this.compFacRes.resolveComponentFactory(ClassShapeComponent);
+    let classViewConRef = this.shapeHost.viewContainerRef;
+
+    let compRef = classViewConRef.createComponent(cmpFac);
+    compRef.instance.name = "Class";
+
+    compRef.instance.x = data.position.x;
+    compRef.instance.y = data.position.y;
+    compRef.instance.width = data.dimension.width;
+    compRef.instance.height = data.dimension.height;
+    compRef.instance.id = data.elementId;
+
     this.elements.push(compRef);
   }
 
@@ -262,6 +329,11 @@ export class EditorComponent implements OnInit, AfterViewInit {
     compRef.instance.updateViewBox();
 
     this.elements.push(compRef);
+  }
+
+  private destroyElementById(elementId: string) {
+    let element = this.getElementById(elementId);
+    this.destroyElement(element);
   }
 
   private destroyElement(element: ShapeWrapperComponent) {

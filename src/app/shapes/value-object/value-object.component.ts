@@ -5,6 +5,7 @@ import { DrawConnectionService } from '../../services/draw-connection.service';
 import { AggregateService } from '../../services/aggregate.service';
 import { BoundedContextService } from '../../services/bounded-context.service';
 import { DeletionService } from '../../services/deletion.service';
+import { SocketService } from '../../services/socket.service';
 
 @Component({
   selector: 'svg.value-object-shape',
@@ -20,9 +21,11 @@ export class ValueObjectComponent extends ClassShapeComponent implements OnInit,
     protected drawConnectionService: DrawConnectionService,
     protected aggregateService: AggregateService,
     protected bcService: BoundedContextService,
-    protected deletionService: DeletionService)
+    protected deletionService: DeletionService,
+    protected socketService: SocketService
+  )
   {
-    super(checker, elementRef, renderer, shapeSelectorService, drawConnectionService, aggregateService, bcService, deletionService);
+    super(checker, elementRef, renderer, shapeSelectorService, drawConnectionService, aggregateService, bcService, deletionService, socketService);
   }
 
   ngOnInit() {

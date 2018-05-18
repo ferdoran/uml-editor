@@ -6,6 +6,9 @@ import { ClassShapeComponent } from '../../shapes/class-shape/class-shape.compon
 import { AggregateService } from '../../services/aggregate.service';
 import { BoundedContextService } from '../../services/bounded-context.service';
 import { DomUtils } from '../../utils/DomUtils';
+import { ElementAttributesChangedMessage } from '../../network/element-attributes-changed.message';
+import { SocketService } from '../../services/socket.service';
+import { ElementMethodsChangedMessage } from '../../network/element-methods-changed.message';
 
 @Component({
   selector: 'app-properties',
@@ -20,7 +23,7 @@ export class PropertiesComponent implements OnInit {
   newAttrValue: string = "";
   newMethValue: string = "";
 
-  constructor(private shapeSelectorService: ShapeSelectorService, public aggregateService: AggregateService, public bcService: BoundedContextService) { }
+  constructor(private shapeSelectorService: ShapeSelectorService, public aggregateService: AggregateService, public bcService: BoundedContextService, private socketService: SocketService) { }
 
 
   ngOnInit() {
@@ -52,12 +55,20 @@ export class PropertiesComponent implements OnInit {
     let c = this.selectedElement as ClassShapeComponent;
     c.attributes.splice(index, 1);
     c.updateHeights();
+    let attrMsg = new ElementAttributesChangedMessage();
+    attrMsg.elementId = c.id;
+    attrMsg.attributes = c.attributes;
+    this.socketService.sendMessage(attrMsg);
   }
 
   removeMethod(index: number) {
     let c = this.selectedElement as ClassShapeComponent;
     c.methods.splice(index, 1);
     c.updateHeights();
+    let attrMsg = new ElementMethodsChangedMessage();
+    attrMsg.elementId = c.id;
+    attrMsg.methods = c.attributes;
+    this.socketService.sendMessage(attrMsg);
   }
 
   addAttribute() {
@@ -65,6 +76,10 @@ export class PropertiesComponent implements OnInit {
     c.attributes.push(this.newAttrValue);
     this.newAttrValue = "";
     c.updateHeights();
+    let attrMsg = new ElementAttributesChangedMessage();
+    attrMsg.elementId = c.id;
+    attrMsg.attributes = c.attributes;
+    this.socketService.sendMessage(attrMsg);
   }
 
   addMethod() {
@@ -72,6 +87,10 @@ export class PropertiesComponent implements OnInit {
     c.methods.push(this.newMethValue);
     this.newMethValue = "";
     c.updateHeights();
+    let attrMsg = new ElementMethodsChangedMessage();
+    attrMsg.elementId = c.id;
+    attrMsg.methods = c.attributes;
+    this.socketService.sendMessage(attrMsg);
   }
 
   selectedAggregate(value) {

@@ -4,6 +4,7 @@ import { ShapeSelectorService } from '../../services/shape-selector.service';
 import { DrawConnectionService } from '../../services/draw-connection.service';
 import { BoundedContext } from '../../bounded-context';
 import * as concaveman from "concaveman";
+import { SocketService } from '../../services/socket.service';
 
 @Component({
   selector: 'svg.bounded-context',
@@ -23,8 +24,13 @@ export class BoundedContextComponent extends ShapeWrapperComponent implements On
   protected rx: number = 0;
   protected ry: number = 0;
 
-  constructor(protected elementRef: ElementRef, protected renderer: Renderer2, protected shapeSelectorService: ShapeSelectorService, protected drawConnectionService: DrawConnectionService) {
-    super(elementRef, renderer, shapeSelectorService, drawConnectionService);
+  constructor(
+    protected elementRef: ElementRef,
+    protected renderer: Renderer2,
+    protected shapeSelectorService: ShapeSelectorService,
+    protected drawConnectionService: DrawConnectionService,
+    protected socketService: SocketService) {
+    super(elementRef, renderer, shapeSelectorService, drawConnectionService, socketService);
   }
 
   ngOnInit() {

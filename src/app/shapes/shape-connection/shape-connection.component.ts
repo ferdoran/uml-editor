@@ -4,6 +4,7 @@ import { ShapeSelectorService } from '../../services/shape-selector.service';
 import { DrawConnectionService } from '../../services/draw-connection.service';
 import { AnchorPointComponent } from '../anchor-point/anchor-point.component';
 import { DeletionService } from '../../services/deletion.service';
+import { SocketService } from '../../services/socket.service';
 
 @Component({
   selector: 'svg.shape-connection',
@@ -16,9 +17,10 @@ export class ShapeConnectionComponent extends ShapeWrapperComponent implements O
     protected elementRef: ElementRef,
     protected shapeSelectorService: ShapeSelectorService,
     protected drawConnectionService: DrawConnectionService,
-    private deletionService: DeletionService)
+    protected deletionService: DeletionService,
+    protected socketService: SocketService)
     {
-      super(elementRef, renderer, shapeSelectorService, drawConnectionService);
+      super(elementRef, renderer, shapeSelectorService, drawConnectionService, socketService);
     }
 
   element1: ShapeWrapperComponent;

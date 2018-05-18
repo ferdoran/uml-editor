@@ -8,6 +8,10 @@ import { AnchorPointComponent } from '../anchor-point/anchor-point.component';
 import { AggregateService } from '../../services/aggregate.service';
 import { BoundedContextService } from '../../services/bounded-context.service';
 import { DeletionService } from '../../services/deletion.service';
+import { SocketService } from '../../services/socket.service';
+import { ElementCreatedMessage } from '../../network/element-created.message';
+import { ElementMovedMessage } from '../../network/element-moved.message';
+import { ElementResizedMessage } from '../../network/element-resized.message';
 
 @Component({
   selector: 'svg.class-shape ',
@@ -43,9 +47,10 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
     protected drawConnectionService: DrawConnectionService,
     protected aggregateService: AggregateService,
     protected bcService: BoundedContextService,
-    protected deletionService: DeletionService)
+    protected deletionService: DeletionService,
+    protected socketService: SocketService)
   {
-    super(elementRef, renderer, shapeSelectorService, drawConnectionService);
+    super(elementRef, renderer, shapeSelectorService, drawConnectionService, socketService);
     this.width = 200;
     this.height = 100;
   }
@@ -65,6 +70,7 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
     this.resizeShape = this.resizeGroup;
     this.updateViewBox();
     this.hasInitializedView = true;
+
   }
 
   ngOnDestroy() {
@@ -123,12 +129,27 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
   }
 
   public setX(x: number) {
-    // console.log("changed x[%s] to [%s]", this.x, x);
     this.x = x;
     this.renderer.setAttribute(this.elementRef.nativeElement, "x", this.x.toString());
     this.renderer.setAttribute(this.stereotypeText.nativeElement, "x", (this.width / 2).toString());
     this.renderer.setAttribute(this.nameText.nativeElement, "x", (this.width / 2).toString());
     this.updateAggregateAndBC();
+    // let movedMessage = new ElementMovedMessage();
+    // movedMessage.elementId = this.id;
+    // movedMessage.position = {x: this.x, y: this.y};
+    // this.socketService.sendMessage(movedMessage);
+  }
+
+  public setY(y: number) {
+    this.y = y;
+    this.renderer.setAttribute(this.elementRef.nativeElement, "y", this.y.toString());
+    this.renderer.setAttribute(this.stereotypeText.nativeElement, "y", (this.nameRectHeight / 2).toString());
+    this.renderer.setAttribute(this.nameText.nativeElement, "y", (this.nameRectHeight / 2 + 10).toString());
+    this.updateAggregateAndBC();
+    // let movedMessage = new ElementMovedMessage();
+    // movedMessage.elementId = this.id;
+    // movedMessage.position = { x: this.x, y: this.y };
+    // this.socketService.sendMessage(movedMessage);
   }
 
   public setHeight(h: number) {
@@ -147,6 +168,7 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
       this.renderer.setAttribute(this.elementRef.nativeElement, "width", this.width.toString());
       this.updateViewBox();
       this.updateAggregateAndBC();
+
     }
   }
 
@@ -161,14 +183,6 @@ export class ClassShapeComponent extends ShapeWrapperComponent implements OnInit
     }
   }
 
-  public setY(y: number) {
-    // console.log("changed y[%s] to [%s]", this.y, y);
-    this.y = y;
-    this.renderer.setAttribute(this.elementRef.nativeElement, "y", this.y.toString());
-    this.renderer.setAttribute(this.stereotypeText.nativeElement, "y", (this.nameRectHeight / 2).toString());
-    this.renderer.setAttribute(this.nameText.nativeElement, "y", (this.nameRectHeight / 2 + 10).toString());
-    this.updateAggregateAndBC();
-  }
 
   startResize(event: MouseEvent, direction: string) {
     event.preventDefault();
