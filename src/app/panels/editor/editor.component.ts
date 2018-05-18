@@ -25,6 +25,7 @@ import { ElementDeletedMessage } from '../../network/element-deleted.message';
 import { ElementMovedMessage } from '../../network/element-moved.message';
 import { ElementResizedMessage } from '../../network/element-resized.message';
 import { ElementAttributesChangedMessage } from '../../network/element-attributes-changed.message';
+import { ElementMethodsChangedMessage } from '../../network/element-methods-changed.message';
 
 @Component({
   selector: 'app-editor',
@@ -185,9 +186,13 @@ export class EditorComponent implements OnInit, AfterViewInit {
       element.setHeight(data.dimension.height);
     });
     this.socketService.onEvent<ElementAttributesChangedMessage>('ElementAttributesChangedMessage').subscribe(data => {
-      console.log('Received ElementAttributesChangedMessage: ', data);
       let element = this.getElementById(data.elementId) as ClassShapeComponent;
       element.attributes = data.attributes;
+      element.updateHeights();
+    });
+    this.socketService.onEvent<ElementMethodsChangedMessage>('ElementMethodsChangedMessage').subscribe(data => {
+      let element = this.getElementById(data.elementId) as ClassShapeComponent;
+      element.attributes = data.methods;
       element.updateHeights();
     });
   }
