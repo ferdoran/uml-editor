@@ -21,7 +21,7 @@ export class BoundedContextsComponent implements OnInit {
     if (this.newContextName.length > 0 && this.contexts.findIndex(bc => bc.name === this.newContextName) === -1) {
       let bc = new BoundedContext(this.newContextName);
       bc.color = this.colorService.nextColor();
-      this.contexts.push(bc);
+      this.bcService.addBoundedContext(bc);
       this.newContextName = "";
       this.bcService.contextAdded.next(bc);
     }
@@ -30,8 +30,7 @@ export class BoundedContextsComponent implements OnInit {
   removeBoundedContext(bcName: string) {
     let idx = this.contexts.findIndex(bc => bc.name === bcName);
     let bc = this.contexts[idx];
-    bc.members.splice(0, bc.members.length);
-    this.contexts.splice(idx, 1);
+    this.bcService.removeBoundedContext(bc);
     this.bcService.contextRemoved.next(bc);
   }
 

@@ -23,7 +23,7 @@ If you want to check out the WebSocket server implementation just check out the 
 * Adding Elements to Aggregates (Classes, Entities, Value Objects)
 * Adding Elements to Bounded Contexts (Classes, Entities, Value Objects).
 * Automatic creation of a background for Aggregates and Bounded Contexts
-* Elements can be modified across multiple sessions/clients (Aggregates and Bounded Contexts not included yet)
+* Elements can be modified across multiple sessions/clients
 
 ## Development server
 

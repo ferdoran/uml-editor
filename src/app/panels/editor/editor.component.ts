@@ -26,6 +26,12 @@ import { ElementMovedMessage } from '../../network/element-moved.message';
 import { ElementResizedMessage } from '../../network/element-resized.message';
 import { ElementAttributesChangedMessage } from '../../network/element-attributes-changed.message';
 import { ElementMethodsChangedMessage } from '../../network/element-methods-changed.message';
+import { AggregateCreatedMessage } from '../../network/aggregate-created.message';
+import { BoundedContextCreatedMessage } from '../../network/bc-created.message';
+import { AggregateChangedMessage } from '../../network/aggregate-changed.message';
+import { AggregateDeletedMessage } from '../../network/aggregate-deleted.message';
+import { BoundedContextDeletedMessage } from '../../network/bc-deleted.message';
+import { BoundedContextChangedMessage } from '../../network/bc-changed.message';
 
 @Component({
   selector: 'app-editor',
@@ -85,14 +91,24 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
     this.aggregateService.aggregateAdded.subscribe(agg => {
       this.createAggregate(agg);
+      let msg = new AggregateCreatedMessage();
+      msg.aggregateName = agg.name;
+      msg.color = agg.color;
+
+      this.socketService.sendMessage(msg);
     });
 
     this.aggregateService.aggregateRemoved.subscribe(agg => {
       let idx = this.elements.findIndex(elem => elem.instance.id === agg.name);
       let elem = this.elements[idx];
 
+      let msg = new AggregateDeletedMessage();
+      msg.aggregateName = agg.name;
+
       this.elements.splice(idx, 1);
       elem.destroy();
+
+      this.socketService.sendMessage(msg);
     });
 
     this.aggregateService.memberAdded.subscribe(data => {
@@ -108,6 +124,18 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
       let elem = this.getElementById(data.aggName);
       elem.updateViewBox();
+
+      let memberList: {elementId: string, isRoot: boolean}[] = [];
+      agg.members.forEach(member => {
+        let m = {elementId: member.element.id, isRoot: member.isAggregateRoot};
+        memberList.push(m);
+      });
+
+      let msg = new AggregateChangedMessage();
+      msg.aggregateName = agg.name;
+      msg.aggregateMembers = memberList;
+
+      this.socketService.sendMessage(msg);
     });
 
     this.aggregateService.memberRemoved.subscribe(data => {
@@ -116,19 +144,41 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
       let elem = this.getElementById(data.aggName);
       elem.updateViewBox();
+
+      let memberList: { elementId: string, isRoot: boolean }[] = [];
+      agg.members.forEach(member => {
+        let m = { elementId: member.element.id, isRoot: member.isAggregateRoot };
+        memberList.push(m);
+      });
+
+      let msg = new AggregateChangedMessage();
+      msg.aggregateName = agg.name;
+      msg.aggregateMembers = memberList;
+
+      this.socketService.sendMessage(msg);
     });
 
     ///////////////////////////////
     this.bcService.contextAdded.subscribe(bc => {
       this.createBoundedContext(bc);
+
+      let msg = new BoundedContextCreatedMessage();
+      msg.bcName = bc.name;
+      msg.color = bc.color;
+
+      this.socketService.sendMessage(msg);
     });
 
-    this.bcService.contextRemoved.subscribe(agg => {
-      let idx = this.elements.findIndex(elem => elem.instance.id === agg.name);
+    this.bcService.contextRemoved.subscribe(bc => {
+      let idx = this.elements.findIndex(elem => elem.instance.id === bc.name);
       let elem = this.elements[idx];
+
+      let msg = new BoundedContextDeletedMessage();
+      msg.bcName = bc.name;
 
       this.elements.splice(idx, 1);
       elem.destroy();
+      this.socketService.sendMessage(msg);
     });
 
     this.bcService.memberAdded.subscribe(data => {
@@ -139,6 +189,18 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
       let elem = this.getElementById(data.bcName);
       elem.updateViewBox();
+
+      let memberList: {elementId: string}[] = [];
+      bc.members.forEach(member => {
+        let m = { elementId: member.element.id };
+        memberList.push(m);
+      });
+
+      let msg = new BoundedContextChangedMessage();
+      msg.bcName = bc.name;
+      msg.bcMembers = memberList;
+
+      this.socketService.sendMessage(msg);
     });
 
     this.bcService.memberRemoved.subscribe(data => {
@@ -147,6 +209,18 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
       let elem = this.getElementById(data.bcName);
       elem.updateViewBox();
+
+      let memberList: { elementId: string }[] = [];
+      bc.members.forEach(member => {
+        let m = { elementId: member.element.id };
+        memberList.push(m);
+      });
+
+      let msg = new BoundedContextChangedMessage();
+      msg.bcName = bc.name;
+      msg.bcMembers = memberList;
+
+      this.socketService.sendMessage(msg);
     });
 
     this.deletionService.elementDeleted.subscribe(element => {
@@ -157,14 +231,16 @@ export class EditorComponent implements OnInit, AfterViewInit {
     });
 
     this.socketService.onEvent<ElementCreatedMessage>('ElementCreatedMessage').subscribe(data => {
+      console.log("Created Shape: " + data.shape);
       switch(data.shape) {
         case "ClassShapeComponent":
-          console.log("Creating Class Shape");
           this.createClassShapeFromEvent(data);
           break;
         case "EntityComponent":
+          this.createEntityFromEvent(data);
           break;
         case "ValueObjectComponent":
+          this.createValueObjectFromEvent(data);
           break;
       }
     });
@@ -178,6 +254,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
       element.setX(data.position.x);
       element.setY(data.position.y);
     });
+
     this.socketService.onEvent<ElementResizedMessage>('ElementResizedMessage').subscribe(data => {
       let element = this.getElementById(data.elementId);
       element.setX(data.position.x);
@@ -185,15 +262,66 @@ export class EditorComponent implements OnInit, AfterViewInit {
       element.setWidth(data.dimension.width);
       element.setHeight(data.dimension.height);
     });
+
     this.socketService.onEvent<ElementAttributesChangedMessage>('ElementAttributesChangedMessage').subscribe(data => {
       let element = this.getElementById(data.elementId) as ClassShapeComponent;
       element.attributes = data.attributes;
       element.updateHeights();
     });
+
     this.socketService.onEvent<ElementMethodsChangedMessage>('ElementMethodsChangedMessage').subscribe(data => {
       let element = this.getElementById(data.elementId) as ClassShapeComponent;
       element.attributes = data.methods;
       element.updateHeights();
+    });
+
+    this.socketService.onEvent<AggregateCreatedMessage>('AggregateCreatedMessage').subscribe(data => {
+      let agg = new Aggregate(data.aggregateName);
+      agg.color = data.color;
+      this.aggregateService.addAggregate(agg);
+      this.createAggregate(agg);
+    });
+
+    this.socketService.onEvent<AggregateChangedMessage>('AggregateChangedMessage').subscribe(data => {
+      let agg = this.aggregateService.aggregates.find(agg => agg.name === data.aggregateName);
+      agg.members = [];
+      data.aggregateMembers.forEach(member => {
+        let m = this.getElementById(member.elementId) as ClassShapeComponent;
+        agg.addMember(m, member.isRoot);
+      });
+
+      agg.updateView();
+    });
+
+    this.socketService.onEvent<AggregateDeletedMessage>('AggregateDeletedMessage').subscribe(data => {
+      let agg = this.aggregateService.aggregates.find(agg => agg.name === data.aggregateName);
+      this.destroyElementById(data.aggregateName);
+      this.aggregateService.removeAggregate(agg);
+    });
+
+    this.socketService.onEvent<BoundedContextCreatedMessage>('BoundedContextCreatedMessage').subscribe(data => {
+      let bc = new BoundedContext(data.bcName);
+      bc.color = data.color;
+
+      this.bcService.addBoundedContext(bc);
+      this.createBoundedContext(bc);
+    });
+
+    this.socketService.onEvent<BoundedContextChangedMessage>('BoundedContextChangedMessage').subscribe(data => {
+      let bc = this.bcService.contexts.find(con => con.name === data.bcName);
+      bc.members = [];
+      data.bcMembers.forEach(member => {
+        let m = this.getElementById(member.elementId) as ClassShapeComponent;
+        bc.addMember(m);
+      });
+
+      bc.updateView();
+    });
+
+    this.socketService.onEvent<BoundedContextDeletedMessage>('BoundedContextDeletedMessage').subscribe(data => {
+      let bc = this.bcService.contexts.find(con => con.name === data.bcName);
+      this.bcService.removeBoundedContext(bc);
+      this.destroyElementById(data.bcName);
     });
   }
 
@@ -243,7 +371,14 @@ export class EditorComponent implements OnInit, AfterViewInit {
     compRef.instance.x = x;
     compRef.instance.y = y;
 
+    let msg = new ElementCreatedMessage();
+    msg.shape = compRef.instance.constructor.name;
+    msg.elementId = compRef.instance.id;
+    msg.position = { x: compRef.instance.x, y: compRef.instance.y };
+    msg.dimension = { width: compRef.instance.width, height: compRef.instance.height };
+
     this.elements.push(compRef);
+    this.socketService.sendMessage(msg);
   }
 
   private createValueObject(position) {
@@ -262,7 +397,14 @@ export class EditorComponent implements OnInit, AfterViewInit {
     compRef.instance.x = x;
     compRef.instance.y = y;
 
+    let msg = new ElementCreatedMessage();
+    msg.shape = compRef.instance.constructor.name;
+    msg.elementId = compRef.instance.id;
+    msg.position = { x: compRef.instance.x, y: compRef.instance.y };
+    msg.dimension = { width: compRef.instance.width, height: compRef.instance.height };
+
     this.elements.push(compRef);
+    this.socketService.sendMessage(msg);
   }
 
   private createClassShape(position) {
@@ -303,7 +445,39 @@ export class EditorComponent implements OnInit, AfterViewInit {
     compRef.instance.y = data.position.y;
     compRef.instance.width = data.dimension.width;
     compRef.instance.height = data.dimension.height;
-    compRef.instance.id = data.elementId;
+    compRef.instance.setId(data.elementId);
+
+    this.elements.push(compRef);
+  }
+
+  private createEntityFromEvent(data: ElementCreatedMessage) {
+    let cmpFac = this.compFacRes.resolveComponentFactory(EntityComponent);
+    let classViewConRef = this.shapeHost.viewContainerRef;
+
+    let compRef = classViewConRef.createComponent(cmpFac);
+    compRef.instance.name = "Entity";
+
+    compRef.instance.x = data.position.x;
+    compRef.instance.y = data.position.y;
+    compRef.instance.width = data.dimension.width;
+    compRef.instance.height = data.dimension.height;
+    compRef.instance.setId(data.elementId);
+
+    this.elements.push(compRef);
+  }
+
+  private createValueObjectFromEvent(data: ElementCreatedMessage) {
+    let cmpFac = this.compFacRes.resolveComponentFactory(ValueObjectComponent);
+    let classViewConRef = this.shapeHost.viewContainerRef;
+
+    let compRef = classViewConRef.createComponent(cmpFac);
+    compRef.instance.name = "Value Object";
+
+    compRef.instance.x = data.position.x;
+    compRef.instance.y = data.position.y;
+    compRef.instance.width = data.dimension.width;
+    compRef.instance.height = data.dimension.height;
+    compRef.instance.setId(data.elementId);
 
     this.elements.push(compRef);
   }

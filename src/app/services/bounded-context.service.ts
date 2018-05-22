@@ -39,4 +39,14 @@ export class BoundedContextService {
     return bcs;
   }
 
+  public addBoundedContext(bc: BoundedContext) {
+    this.contexts.push(bc);
+  }
+
+  public removeBoundedContext(bc: BoundedContext) {
+    let idx = this.contexts.findIndex(con => con.name === bc.name);
+    bc.members.splice(0, bc.members.length);
+    this.contexts.splice(idx, 1);
+  }
+
 }

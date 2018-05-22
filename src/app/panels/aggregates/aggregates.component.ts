@@ -9,29 +9,27 @@ import { ColorService } from '../../services/color.service';
   styleUrls: ['./aggregates.component.css']
 })
 export class AggregatesComponent implements OnInit {
-  aggregates: Aggregate[] = [];
   newAggregateName: string = "";
-  constructor(private aggregateService: AggregateService, private colorService: ColorService) { }
+  constructor(protected aggregateService: AggregateService, private colorService: ColorService) { }
 
   ngOnInit() {
-    this.aggregateService.aggregates = this.aggregates;
   }
 
   addAggregate() {
-    if (this.newAggregateName.length > 0 && this.aggregates.findIndex(agg => agg.name === this.newAggregateName) === -1) {
+    if (this.newAggregateName.length > 0 && this.aggregateService.aggregates.findIndex(agg => agg.name === this.newAggregateName) === -1) {
       let agg = new Aggregate(this.newAggregateName);
       agg.color = this.colorService.nextColor();
-      this.aggregates.push(agg);
+      this.aggregateService.addAggregate(agg);
       this.newAggregateName = "";
       this.aggregateService.aggregateAdded.next(agg);
     }
   }
 
   removeAggregate(aggName: string) {
-    let idx = this.aggregates.findIndex(agg => agg.name === aggName);
-    let agg = this.aggregates[idx];
-    agg.members.splice(0, agg.members.length);
-    this.aggregates.splice(idx, 1);
+    let idx = this.aggregateService.aggregates.findIndex(agg => agg.name === aggName);
+    let agg = this.aggregateService.aggregates[idx];
+    this.aggregateService.removeAggregate(agg);
     this.aggregateService.aggregateRemoved.next(agg);
+
   }
 }

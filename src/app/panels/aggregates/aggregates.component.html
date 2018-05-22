@@ -2,7 +2,7 @@
   <h2 class="text-center">Aggregates</h2>
   <div id="aggregateList">
     <ul class="list-group">
-      <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let agg of aggregates" [style.background-color]="agg.color">
+      <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let agg of this.aggregateService.aggregates" [style.background-color]="agg.color">
         <div class="input-group input-group-sm mb-1">
           <input class="form-control rounded-0" [(ngModel)]="agg.name" minlength="1" />
           <div class="input-group-append">

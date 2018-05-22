@@ -12,11 +12,13 @@ export class Aggregate {
         this.name = name;
     }
 
-    addMember(element: ClassShapeComponent, isRoot: boolean) {
+    addMember(element: ClassShapeComponent, isRoot: boolean): boolean {
         if(this.existMember(element) === -1) {
             let member = new AggregateMember(element, isRoot);
             this.members.push(member);
+            return true;
         }
+        return false;
     }
 
     removeMember(element: ClassShapeComponent) {

@@ -14,6 +14,16 @@ export class AggregateService {
 
   constructor() { }
 
+  public addAggregate(aggregate: Aggregate) {
+    this.aggregates.push(aggregate);
+  }
+
+  public removeAggregate(agg: Aggregate) {
+    let idx = this.aggregates.findIndex(aggr => aggr.name === agg.name);
+    agg.members.splice(0, agg.members.length);
+    this.aggregates.splice(idx, 1);
+  }
+
   public addAggregateMember(aggName: string, element: ClassShapeComponent, isRoot: boolean) {
     this.memberAdded.next({aggName: aggName, element: element, isRoot: isRoot});
   }
