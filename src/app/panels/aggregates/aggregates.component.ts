@@ -10,7 +10,7 @@ import { ColorService } from '../../services/color.service';
 })
 export class AggregatesComponent implements OnInit {
   newAggregateName: string = "";
-  constructor(protected aggregateService: AggregateService, private colorService: ColorService) { }
+  constructor(public aggregateService: AggregateService, private colorService: ColorService) { }
 
   ngOnInit() {
   }

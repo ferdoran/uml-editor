@@ -29,8 +29,10 @@ import { BoundedContextService } from './services/bounded-context.service';
 import { BoundedContextComponent } from './shapes/bounded-context/bounded-context.component';
 import { DeletionService } from './services/deletion.service';
 import { ColorService } from './services/color.service';
+import { environment } from '../environments/environment';
 
-const config: SocketIoConfig = { url: 'http://localhost:3020', options: {} };
+const url = environment.websocketServer;
+const config: SocketIoConfig = { url: 'http://' + url + ':3020', options: {} };
 
 
 @NgModule({

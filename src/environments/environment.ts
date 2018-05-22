@@ -5,5 +5,6 @@
 
 export const environment = {
   production: false,
-  gridSize: 10
+  gridSize: 10,
+  websocketServer: "localhost"
 };
