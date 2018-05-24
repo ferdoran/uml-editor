@@ -4,7 +4,7 @@ import { Subject } from 'rxjs/Subject';
 @Injectable()
 export class ShapeDropService {
 
-  public droppedShape: Subject<any> = new Subject();
+  public droppedShape: Subject<{type: string, x: number, y: number}> = new Subject();
 
   constructor() { }
 

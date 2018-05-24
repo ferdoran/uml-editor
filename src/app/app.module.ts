@@ -30,6 +30,7 @@ import { BoundedContextComponent } from './shapes/bounded-context/bounded-contex
 import { DeletionService } from './services/deletion.service';
 import { ColorService } from './services/color.service';
 import { environment } from '../environments/environment';
+import { ZoomService } from './services/zoom.service';
 
 const url = environment.websocketServer;
 const config: SocketIoConfig = { url: 'http://' + url + ':3020', options: {} };
@@ -69,7 +70,7 @@ const config: SocketIoConfig = { url: 'http://' + url + ':3020', options: {} };
     AggregateComponent,
     BoundedContextComponent
   ],
-  providers: [ShapeSelectorService, ShapeDropService, DrawConnectionService, SocketService, AggregateService, BoundedContextService, DeletionService, ColorService],
+  providers: [ShapeSelectorService, ShapeDropService, DrawConnectionService, SocketService, AggregateService, BoundedContextService, DeletionService, ColorService, ZoomService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

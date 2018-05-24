@@ -1,6 +1,7 @@
 /* width */
 ::-webkit-scrollbar {
     width: 5px;
+    height: 5px;
 }
 
 /* Track */
@@ -46,7 +47,7 @@ app-shape-menu {
     height: 32.5%;
     position: fixed;
     background-color: #f0f0f0;
-    z-index: 0;
+    z-index: 1;
 }
 
 app-properties {
@@ -57,18 +58,19 @@ app-properties {
     position: fixed;
     background-color: #f0f0f0;
     overflow-y: scroll;
-    z-index: 0;
+    z-index: 1;
 }
 
 app-editor {
     top: 15%;
+    height: 85%;
     left: 25%;
     right: 20%;
-    height: 85%;
     width: 55%;
     position: fixed;
     background-color: #fafafa;
     z-index: 0;
+    overflow: scroll;
 }
 
 app-aggregates {
@@ -78,7 +80,7 @@ app-aggregates {
     height: 25%;
     position: fixed;
     background-color: #f0f0f0;
-    z-index: 0;
+    z-index: 1;
     overflow-y: scroll;
 }
 
@@ -89,6 +91,6 @@ app-bounded-contexts {
     height: 27.5%;
     position: fixed;
     background-color: #f0f0f0;
-    z-index: 0;
+    z-index: 1;
     overflow-y: scroll;
 }

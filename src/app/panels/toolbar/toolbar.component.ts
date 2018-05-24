@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ZoomService } from '../../services/zoom.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -7,9 +8,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ToolbarComponent implements OnInit {
 
-  constructor() { }
+  constructor(private zoomService: ZoomService) { }
 
   ngOnInit() {
+  }
+
+  zoomIn() {
+    this.zoomService.zoom(0.1);
+  }
+
+  zoomOut() {
+    this.zoomService.zoom(-0.1);
   }
 
 }

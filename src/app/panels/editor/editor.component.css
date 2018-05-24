@@ -1,4 +1,8 @@
 #editor, #editor-panel {
-    width: calc(100%);
-    height: calc(100%);
+    width: calc(120%);
+    height: calc(120%);
+}
+
+#editor-panel {
+    overflow: scroll;
 }

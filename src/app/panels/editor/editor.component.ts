@@ -32,6 +32,7 @@ import { AggregateChangedMessage } from '../../network/aggregate-changed.message
 import { AggregateDeletedMessage } from '../../network/aggregate-deleted.message';
 import { BoundedContextDeletedMessage } from '../../network/bc-deleted.message';
 import { BoundedContextChangedMessage } from '../../network/bc-changed.message';
+import { ZoomService } from '../../services/zoom.service';
 
 @Component({
   selector: 'app-editor',
@@ -57,7 +58,8 @@ export class EditorComponent implements OnInit, AfterViewInit {
     private bcService: BoundedContextService,
     private deletionService: DeletionService,
     private colorService: ColorService,
-    private shapeSelectorService: ShapeSelectorService) { }
+    private shapeSelectorService: ShapeSelectorService,
+    private zoomService: ZoomService) { }
 
   ngOnInit() {
     let classFac = this.compFacRes.resolveComponentFactory(ClassShapeComponent);
@@ -65,23 +67,23 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
     this.shapeDropService.droppedShape.subscribe(droppedData => {
       let selfy = this;
+
+      let pt = this.panel.nativeElement.createSVGPoint();
+      pt.x = droppedData.x;
+      pt.y = droppedData.y;
+
+      let svgP = pt.matrixTransform(this.panel.nativeElement.getScreenCTM().inverse());
       if (droppedData.type === "class") {
-        var x = droppedData.x - this.elementRef.nativeElement.offsetLeft;
-        var y = droppedData.y - this.elementRef.nativeElement.offsetTop;
-        this.createClassShape({ x: x, y: y });
+        this.createClassShape({ x: svgP.x, y: svgP.y });
       }
       else if (droppedData.type === "interface") {
 
       }
       else if (droppedData.type === "entity") {
-        var x = droppedData.x - this.elementRef.nativeElement.offsetLeft;
-        var y = droppedData.y - this.elementRef.nativeElement.offsetTop;
-        this.createEntity({ x: x, y: y });
+        this.createEntity({ x: svgP.x, y: svgP.y });
       }
       else if (droppedData.type === "valueobject") {
-        var x = droppedData.x - this.elementRef.nativeElement.offsetLeft;
-        var y = droppedData.y - this.elementRef.nativeElement.offsetTop;
-        this.createValueObject({ x: x, y: y });
+        this.createValueObject({ x: svgP.x, y: svgP.y });
       }
     });
 
@@ -245,6 +247,30 @@ export class EditorComponent implements OnInit, AfterViewInit {
       }
     });
 
+
+    this.zoomService.zoomEvent.subscribe(zoomLevel => {
+      let svg = this.panel.nativeElement;
+      let compStyle = window.getComputedStyle(svg);
+      let w = +compStyle.width.replace("px", "");
+      let h = +compStyle.height.replace("px", "");
+
+      let cX = w / 2;
+      let cY = h / 2;
+
+      var transformMatrix = [1, 0, 0, 1, 0, 0];
+
+      for(var i = 0; i < 4; i++) {
+        transformMatrix[i] *= zoomLevel;
+      }
+      transformMatrix[4] += (1-zoomLevel) * cX;
+      transformMatrix[5] += (1-zoomLevel) * cY;
+
+      var newMatrix = "matrix(" + transformMatrix.join(' ') + ")";
+      this._renderer.setAttribute(this.panel.nativeElement, "transform", newMatrix);
+    });
+
+    //////////////////// NETWORK MESSAGES
+
     this.socketService.onEvent<ElementDeletedMessage>('ElementDeletedMessage').subscribe(data => {
       this.destroyElementById(data.elementId);
     });
@@ -330,8 +356,6 @@ export class EditorComponent implements OnInit, AfterViewInit {
     let w = +compStyle.width.replace("px", "");
     let h = +compStyle.height.replace("px", "");
 
-    w = w - w % environment.gridSize;
-    h = h - h % environment.gridSize;
     this._renderer.setStyle(this.panel.nativeElement, "width", w);
     this._renderer.setStyle(this.panel.nativeElement, "height", h);
 
